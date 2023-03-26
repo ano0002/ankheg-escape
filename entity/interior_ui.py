@@ -12,8 +12,11 @@ class Button(Entity):
 
         self.on_click = on_click
 
+    def update(self):
+        if self.hovered:
+            self.color = color.lime
+
     def input(self, key):
-        print(self.hovered, self.on_click)
         if self.hovered:
             if key == 'left mouse down':
                 if self.on_click:

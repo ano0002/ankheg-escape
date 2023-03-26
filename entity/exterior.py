@@ -2,11 +2,9 @@ from ursina import *
 
 
 class Tree(Entity):
-    def __init__(self, tree_path, texture_path, position = (0, 0, 0), scale = (1, 1, 1), color = color.white):
+    def __init__(self, tree, texture_path,**kwargs):
         super().__init__(
-            model = tree_path,
+            model =tree,
             texture = texture_path,
-            position = position,
-            scale = scale,
-            collider = 'box'
+            **kwargs
             )
