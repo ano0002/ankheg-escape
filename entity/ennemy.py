@@ -14,7 +14,7 @@ class Ankheg(Entity):
         self.player = player
     
     def play_screamer(self):
-        Audio('../assets/monsters/monsterscream.mp3', autoplay = True)
+        Audio('../assets/sounds/monsterscream.mp3', autoplay = True)
         self.player.mode = 2
         self.position = (0,-4.4,25)
         AmbientLight(color=(1, 1, 1, 1.0))
