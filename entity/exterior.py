@@ -15,7 +15,7 @@ class Post(Entity):
             model ="../assets/post/security post.obj",
             texture = "../assets/post/texture.png",
             **kwargs,
-            scale = (0.1,0.1,0.1),
+            scale = (0.02,0.02,0.02),
             double_sided = True,
             shader = lit_with_shadows_shader
             )

@@ -16,8 +16,14 @@ void main() {
     if (mask.r < 1.){
         mask.a = 0;
     }
+    
     vec4 texture = texture(p3d_Texture0, uv);
-    texture.a -= mask.r;
+    if (texture.g == texture.b || texture.b == 0){
+        texture.a = 0;
+    }
+    else{
+        texture.a -= mask.r;
+    }
     fragColor = texture * p3d_ColorScale;
     
 }
@@ -38,7 +44,7 @@ class Fur():
             
             furLayer.parent = entity
             furLayer.scale = 1 + layer
-            furLayer.position = Vec3(0, 0, 0)
+            furLayer.position = Vec3(0, layer, 0)
             furLayer.collider =  None
             self.furLayers.append(furLayer)
         entity.color -= color.rgba(shadow, shadow, shadow, 0)

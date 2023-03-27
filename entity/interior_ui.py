@@ -1,20 +1,21 @@
 from ursina import *
 
-class Button(Entity):
-    def __init__(self, text = 'button', scale = (1, 1, 1), position = (0, 0, 0), color = color.white, on_click = None):
+class Custom_Button(Entity):
+    def __init__(self, text = 'button', scale = (1, 1, 1), on_click = None, **kwargs):
         super().__init__(
             model = 'cube',
             scale = scale,
-            position = position,
-            color = color,
-            collider = 'box'
+            collider = 'box',
+            **kwargs
             )
-
+        self.default_scale = scale
         self.on_click = on_click
-
+        
     def update(self):
         if self.hovered:
-            self.color = color.lime
+            self.scale_y = self.default_scale[1] * 0.7
+        else:
+            self.scale_y = self.default_scale[1]
 
     def input(self, key):
         if self.hovered:
