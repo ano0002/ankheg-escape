@@ -30,8 +30,11 @@ class Player(Entity):
         elif value == 2:
             mouse.locked = False
             mouse.visible = False
+        elif value == 3:
+            mouse.locked = False
+            mouse.visible = False
         else:
-            raise ValueError("Mode must be 0, 1 or 2")
+            raise ValueError("Mode must be 0, 1, 2 or 3")
         self._mode = value
 
     def update(self):

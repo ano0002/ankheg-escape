@@ -18,7 +18,7 @@ void main() {
     }
     
     vec4 texture = texture(p3d_Texture0, uv);
-    if (texture.g == texture.b || texture.b == 0){
+    if (texture.g == texture.b || texture.b == 0 || int(texture.g*255) == 87){
         texture.a = 0;
     }
     else{
