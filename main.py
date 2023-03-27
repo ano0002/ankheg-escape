@@ -6,6 +6,7 @@ from entity.exterior import Tree, Post
 from entity.player import Player
 from entity.ennemy import Ankheg
 from shader.fur_shader import *
+from entity.menu import UI
 
 app = Ursina()
 
@@ -14,7 +15,7 @@ grass = Fur(entity=world, scale=1000, layers=2, layerSize=0.005)
 
 sound_manager = Audio("assets/sounds/atmosphere-dark.mp3", autoplay=False, loop=True, volume=0.5)
 
-player = Player(position = (0,25, 0),rotation = (0,180,0), camera = camera)
+player = Player(position = (0,25, 0),rotation = (0,180,0), camera = camera, mode= 3)
 
 
 
@@ -62,7 +63,7 @@ def update():
         ankheg.play_screamer()
     """
     if player.mode == 3:
-        
+        pass
      
 def input(key):
     if key == "escape":
@@ -70,7 +71,9 @@ def input(key):
 
 def start():
     sound_manager.play()
-    
+    player.mode = 0
+    player.position = (2,25, 2)
 
+menu = UI(start = start,player = player)
 
 app.run()
