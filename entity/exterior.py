@@ -17,7 +17,8 @@ class Post(Entity):
             **kwargs,
             scale = (0.02,0.02,0.02),
             double_sided = True,
-            shader = lit_with_shadows_shader
+            shader = lit_with_shadows_shader,
+            collider = 'box'
             )
 
 if __name__ == "__main__":

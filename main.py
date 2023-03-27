@@ -4,6 +4,7 @@ import json
 from entity.interior_ui import Custom_Button
 from entity.exterior import Tree, Post
 from entity.player import Player
+from entity.ennemy import Ankheg
 from shader.fur_shader import *
 
 app = Ursina()
@@ -39,14 +40,20 @@ sun.look_at((-1, -0.9, 0))
 
 AmbientLight(color=(0.1, 0.1, 0.1, 1.0))
 
-light = PointLight(position=(-0.7,3, 0.15), color=color.white, radius=1000,)
+ankheg = Ankheg(player = player,position = (15,0,15), rotation = (0,180,0))
 
 Sky(texture='assets/world/sky.jpg', scale=1000, double_sided=True)
 
+screamer_box = Entity(model = "cube", scale = (80,5,80), position = (0,-5,0), collider = 'box', color = color.black,double_sided = True)
 
 post = Post(position = (-0.7,2,0),rotation= (0,180,0))
 
-def update():
-    print(player.position)
+def update():	
+    if distance_xz(player.position, post.position) >5 and player.mode != 2:
+        ankheg.play_screamer()
+        
+def input(key):
+    if key == "escape":
+        ankheg.play_screamer()
 
 app.run()
