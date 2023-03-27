@@ -53,27 +53,52 @@ grillage = Entity(model = "cube", scale = (59,5,0.1), position = (13.5,3.5,10.1)
 camp = Entity(model = "./assets/world/camp.obj", scale = (5,5,5), position = (-3.41799, 1.5, 27.8483),color = color.rgb(0,0.12*255,0.035*255),rotation_z= -1,texture_scale=(1,1))
 camp2 = Entity(model = "./assets/world/camp.obj", scale = (5,5,5), position = (28.9974, 3.5, 27.8483),color = color.rgb(0,0.12*255,0.035*255),rotation_z= -5,texture_scale=(1,1))
 
+"""
+#Remove this to remove the fog
 fog = []
 for i in range(10):
     fog.append(Entity(parent=player,color = color.rgba(0,0,0,i*0.1), model='sky_dome', scale=4+i*7,texture='assets/world/sky.jpg'))
+"""
+
 
 def update():	
-    """
     if distance_xz(player.position, post.position) >5 and player.mode != 2:
         ankheg.play_screamer()
-    """
     if player.mode == 3:
         pass
      
 def input(key):
     if key == "escape":
         ankheg.play_screamer()
+    if key == "f":
+        print(player.position)
 
 def start():
     sound_manager.play()
+    enter()
+
+def leave():
     player.mode = 0
-    player.position = (0,5, 0)
+    player.position = (1,2.52, 0)
+    door_leave.disable()
+    door_leave.text.visible = False
+    door_enter.enable()
+
+def enter():
+    player.mode =1
+    player.position = (-0.1,2.52, 0)
+    player.rotation = (0,180,0)
+    camera.rotation = (0,0,0)
+    door_leave.enable()
+    door_enter.disable()
+    door_enter.text.visible = False
+
+door_leave = Custom_Button(scale = (0.01,1,0.5), position = (0.4,2.52,0.25), color=color.clear, text = "Leave", on_click = leave,animated=False, player=player)
+door_enter = Custom_Button(scale = (0.01,1,0.5), position = (0.6,2.52,0.25), color=color.clear, text = "Enter", on_click = enter,animated=False, player=player)
+
 
 menu = UI(start = start,player = player)
+
+
 
 app.run()

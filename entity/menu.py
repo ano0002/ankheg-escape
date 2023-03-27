@@ -34,9 +34,12 @@ class UI(Entity):
         self.setting_button = UI_Button(main_ui=self,texture="./assets/ui/setting_button.png", scale = Vec2(0.2,0.1), position = (-0.5,-0.2), on_click = self.open_setting)
         self.main_menu = [self.play_button,self.setting_button]
         self.setting_menu = []
+        self.setting_menu.append(UI_Button(main_ui=self,texture="./assets/ui/close_button.png", scale = Vec2(0.1,0.1), position = (-0.5,0.2), on_click = self.close_setting))
         self.cursor = Entity(parent = camera.ui, model = 'quad', scale = (0.04,0.04), origin = (-0.5,0), texture = './assets/ui/cursor.png')
         self.player = player
-    
+        for child in self.setting_menu:
+            child.disable()
+
     def update(self):
         if self.player.mode not in (0,2):
             self.cursor.position = mouse.position
@@ -51,7 +54,8 @@ class UI(Entity):
     def open_setting(self):
         for child in self.main_menu:
             child.disable()
-        self.setting_menu.append(UI_Button(main_ui=self,texture="./assets/ui/setting_button.png", scale = Vec2(0.2,0.1), position = (-0.5,-0.2), on_click = self.close_setting))
+        for child in self.setting_menu:
+            child.enable()
     
     def close_setting(self):
         for child in self.setting_menu:
