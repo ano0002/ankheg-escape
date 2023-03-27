@@ -4,7 +4,7 @@ class Player(Entity):
     def __init__(self, **kwargs):
         self.rotation_speed = 100
         self.speed = 2
-        self.gravity = 9.81
+        self.gravity = 0.5
         self.velocity = Vec3(0, 0, 0)
         self.mode = 0
         super().__init__(

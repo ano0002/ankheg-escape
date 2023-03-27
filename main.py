@@ -72,7 +72,7 @@ def input(key):
 def start():
     sound_manager.play()
     player.mode = 0
-    player.position = (2,25, 2)
+    player.position = (0,5, 0)
 
 menu = UI(start = start,player = player)
 
