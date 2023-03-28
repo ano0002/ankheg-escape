@@ -24,6 +24,7 @@ class World(Entity):
         self.load_trees()
         self.load_camp()
         self.load_post()
+        self.load_screamer()
         self.sky = Sky(texture='assets/world/sky.jpg', scale=1000, double_sided=True)
 
     def load_camp(self):
