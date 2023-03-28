@@ -62,8 +62,10 @@ for i in range(10):
 
 
 def update():	
+    """
     if distance_xz(player.position, post.position) >5 and player.mode != 2:
         ankheg.play_screamer()
+    """
     if player.mode == 3:
         pass
      

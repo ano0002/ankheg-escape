@@ -1,5 +1,5 @@
 from ursina import *
-from direct.actor.Actor import Actor
+from ursina.shaders import unlit_shader
 
 class Player(Entity):
     def __init__(self, **kwargs):
@@ -9,14 +9,20 @@ class Player(Entity):
         self.velocity = Vec3(0, 0, 0)
         self.flashlight = Entity(parent=camera, model='../assets/flashlight/flashlight.obj', texture='../assets/flashlight/texture.jpg',\
                                  double_sided = True ,scale= 0.0003,rotation = Vec3(2,-5,-60), position=(0.5, -0.2, 0.8), always_on_top = True)
+        self.light_cone = Entity(parent=camera, model='../assets/flashlight/lightcone.obj', color=color.white50,\
+                                 position=(0.5, -0.2, 0.8),rotation = Vec3(-85,0,0),scale=100,double_sided = True,shader = unlit_shader)
+        self.battery = 100
         self.mode = 0
         super().__init__(
             **kwargs
         )
         camera.parent = self
         camera.position = (0, 0.2, 0)
-        self.frame = 0
         camera.fov = 90
+        self.frame = 0
+        self.time = 0
+        self.last_battery_drop = 0
+        
     @property
     def mode(self):
         return self._mode
@@ -27,26 +33,41 @@ class Player(Entity):
             mouse.locked = True
             mouse.visible = False
             self.flashlight.enabled = True
+            self.light_cone.enabled = True
         elif value == 1:#in post
             mouse.locked = False
             mouse.visible = False
             self.flashlight.enabled = False
+            self.light_cone.enabled = False
         elif value == 2:#screamer
             mouse.locked = False
             mouse.visible = False
             self.flashlight.enabled = False
+            self.light_cone.enabled = False
         elif value == 3:#in menu
             mouse.locked = False
             mouse.visible = False
             self.flashlight.enabled = False
+            self.light_cone.enabled = False
         else:
             raise ValueError("Mode must be 0, 1, 2 or 3")
         self._mode = value
-
+    
     def update(self):
         self.frame += 1
+        self.time += time.dt
         if self.frame == 60:
             self.frame = 0
+        
+        if self.time > 300:
+            self.time = 0
+        
+        if self.time-self.last_battery_drop > 0.2 :
+            self.last_battery_drop = self.time
+            if self.battery > 0:
+                if self.light_cone.enabled:
+                    self.battery -= 1
+                    self.light_cone.color = color.rgba(255,255,255,self.battery/100*.50*255)
         
         
         if self.mode == 0:#free cam
@@ -73,8 +94,25 @@ class Player(Entity):
         camera.rotation_x = clamp(camera.rotation_x, -90, 90)
             
     def input(self,key):
-        if self.mode == 1 :
+        if self.mode == 0:
+            if key == "left mouse down":
+                """
+                self.toggling_light = True
+                self.light_cone.animate_scale(0, duration = 0.1,curve=curve.in_out_sine)
+                func =Func(Sequence(self.light_cone.,Func(setattr,self,"toggling_light",False)).start)
+                func.delay = 0.1
+                func()
+                """
+                if self.light_cone.enabled:
+                    self.light_cone.fade_out(duration = .3)
+                    function =Func(setattr,self.light_cone,"enabled",False)
+                    invoke(function, delay = .3)
+                else:
+                    self.light_cone.enabled = True
+                    self.light_cone.color = color.rgba(255,255,255,self.battery/100*.50*255)
+        elif self.mode == 1 :
             if key == "a":
                 self.animate_rotation((0, round(self.rotation_y/90)*90-90,0), duration = 0.2,curve=curve.in_out_sine)
             elif key == "d":
                 self.animate_rotation((0, round(self.rotation_y/90)*90+90,0), duration = 0.2,curve=curve.in_out_sine)
+                
