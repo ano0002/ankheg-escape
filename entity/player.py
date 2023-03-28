@@ -1,6 +1,25 @@
 from ursina import *
 from ursina.shaders import unlit_shader
 
+class Battery(Entity):
+    def __init__(self, **kwargs):
+        super().__init__(
+            model = 'quad',
+            scale = (0.1,0.05),
+            texture = 'assets/flashlight/battery-Sheet.png',
+            parent = camera.ui,
+            position = (-0.7,-0.4),
+            texture_scale = [1/3,1],
+            **kwargs
+        )
+    def set_battery(self,value):
+        if value > 66:
+            self.texture_offset = Vec2(0,0)
+        elif value > 33:
+            self.texture_offset = Vec2(1/3,0)
+        else:
+            self.texture_offset = Vec2(2/3,0)
+            
 class Player(Entity):
     def __init__(self, **kwargs):
         self.rotation_speed = 100
@@ -11,6 +30,8 @@ class Player(Entity):
                                  double_sided = True ,scale= 0.0003,rotation = Vec3(2,-5,-60), position=(0.5, -0.2, 0.8), always_on_top = True)
         self.light_cone = Entity(parent=camera, model='../assets/flashlight/lightcone.obj', color=color.white50,\
                                  position=(0.5, -0.2, 0.8),rotation = Vec3(-85,0,0),scale=100,double_sided = True,shader = unlit_shader)
+        self.flashlight_brightness = 0.3
+        self.battery_ui = Battery()
         self.battery = 100
         self.mode = 0
         super().__init__(
@@ -34,21 +55,13 @@ class Player(Entity):
             mouse.visible = False
             self.flashlight.enabled = True
             self.light_cone.enabled = True
-        elif value == 1:#in post
+            self.battery_ui.enabled = True
+        elif value in (1,2,3):#in (post,screamer,menu)
             mouse.locked = False
             mouse.visible = False
             self.flashlight.enabled = False
             self.light_cone.enabled = False
-        elif value == 2:#screamer
-            mouse.locked = False
-            mouse.visible = False
-            self.flashlight.enabled = False
-            self.light_cone.enabled = False
-        elif value == 3:#in menu
-            mouse.locked = False
-            mouse.visible = False
-            self.flashlight.enabled = False
-            self.light_cone.enabled = False
+            self.battery_ui.enabled = False
         else:
             raise ValueError("Mode must be 0, 1, 2 or 3")
         self._mode = value
@@ -67,7 +80,10 @@ class Player(Entity):
             if self.battery > 0:
                 if self.light_cone.enabled:
                     self.battery -= 1
-                    self.light_cone.color = color.rgba(255,255,255,self.battery/100*.50*255)
+                    self.light_cone.color = color.rgba(255,255,255,self.battery/100*self.flashlight_brightness*255)
+                    self.battery_ui.set_battery(self.battery)
+                else :
+                    self.battery += 0.5
         
         
         if self.mode == 0:#free cam
@@ -109,7 +125,7 @@ class Player(Entity):
                     invoke(function, delay = .3)
                 else:
                     self.light_cone.enabled = True
-                    self.light_cone.color = color.rgba(255,255,255,self.battery/100*.50*255)
+                    self.light_cone.color = color.rgba(255,255,255,self.battery/100*self.flashlight_brightness*255)
         elif self.mode == 1 :
             if key == "a":
                 self.animate_rotation((0, round(self.rotation_y/90)*90-90,0), duration = 0.2,curve=curve.in_out_sine)
