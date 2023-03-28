@@ -26,7 +26,7 @@ class Custom_Button(Entity):
                 self.text.position = Vec3(0, -0.05,0)
             else :
                 self.text.position =  mouse.position + Vec3(0.05, -0.02,0)
-
+        
     def input(self, key):
         if self.player != None:
             if self.hovered and distance_xz(self.player.position, self.position) < 2:

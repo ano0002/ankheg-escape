@@ -1,95 +1,70 @@
-from ursina import *
-import time
-
-                    
-grass_shader = Shader(name='grass_shader', language=Shader.GLSL,
+from ursina import Shader, Vec2, Vec3, Vec4, Quat
+instancing_shader=Shader(name='instancing_shader', language=Shader.GLSL, vertex='''#version 140
+uniform mat4 p3d_ModelViewProjectionMatrix;
+in vec4 p3d_Vertex;
+in vec2 p3d_MultiTexCoord0;
+out vec2 texcoords;
+uniform vec2 texture_scale;
+uniform vec2 texture_offset;
+uniform vec3 position_offsets[256];
+uniform vec4 rotation_offsets[256];
+uniform vec3 scale_multipliers[256];
+void main() {
+    vec3 v = p3d_Vertex.xyz * scale_multipliers[gl_InstanceID];
+    vec4 q = rotation_offsets[gl_InstanceID];
+    v = v + 2.0 * cross(q.xyz, cross(q.xyz, v) + q.w * v);
+    gl_Position = p3d_ModelViewProjectionMatrix * (vec4(v + position_offsets[gl_InstanceID], 1.));
+    texcoords = (p3d_MultiTexCoord0 * texture_scale) + texture_offset;
+}
+''',
 
 fragment='''
-#version 430
-uniform sampler2D tex;
-uniform float iTime;
-uniform vec3 cp;
-uniform vec3 rotation;
-#define BLADES 110
-
-
-
-vec4 grass(vec2 p, float x)
-{
-	float s = mix(0.7, 2.0, 0.5 + sin(x * 12.0) * 0.5);
-	p.x += pow(1.0 + p.y, 2.0) * 0.1 * cos(x * 0.5 + iTime);
-	p.x *= s;
-	p.y = (1.0 + p.y) * s - 1.0;
-	float m = 1.0 - smoothstep(0.0, clamp(1.0 - p.y * 1.5, 0.01, 0.6) * 0.2 * s, pow(abs(p.x) * 19.0, 1.5) + p.y - 0.6);
-	return vec4(mix(vec3(0.05, 0.1, 0.0) * 0.8, vec3(0.0, 0.3, 0.0), (p.y + 1.0) * 0.5 + abs(p.x)), m * smoothstep(-1.0, -0.9, p.y));
-}
-
-
-in vec2 window_size;
-in vec2 uv;
+#version 140
+uniform sampler2D p3d_Texture0;
+uniform vec4 p3d_ColorScale;
+in vec2 texcoords;
 out vec4 fragColor;
-void main()
-{
-    vec3 ct = vec3(0, 0, 0);	
-	vec3 cw = normalize(cp - ct);
-
-    vec3 cu = normalize(cross(cw, vec3(0.0, 1.0, 0.0)));
- 
-	vec3 cv = normalize(cross(cu, cw));
-	
-	mat3 rm = mat3(cu, cv, cw);
-	
-	vec2 t = uv;
-	
-	vec3 ro = cp, rd = vec3(t, 1);
-	
-	vec3 fcol = texture(tex, uv).rgb;
- 
-	for(int i = 0; i < BLADES; i += 1)
-	{
-		float z = -(float(BLADES - i) * 0.1 + 1.0);
-		vec4 pln = vec4(0.0, 0.0, -1.0, z);
-		float t = (pln.w - dot(pln.xyz, ro)) / dot(pln.xyz, rd);
-		vec2 tc = ro.xy + rd.xy * t;
-		
-		tc.x += cos(float(i) * 3.0) * 4.0;
-		
-		float cell = floor(tc.x);
-		
-		tc.x = (tc.x - cell) - 0.5;
-		
-		vec4 c = grass(tc, float(i) + cell * 10.0);
-		
-		fcol = mix(fcol, c.rgb, step(0.0, t) * c.w);
-	}
-	
-	fcol = pow(fcol* 1.1, vec3(0.8));
-	
-	
-	
-	fragColor.rgb = fcol * 1.8 ;
-	fragColor.a = 1.0;
+void main() {
+    vec4 color = texture(p3d_Texture0, texcoords) * p3d_ColorScale;
+    fragColor = color.rgba;
 }
-
 ''',
 default_input={
-    'iTime': 1
-})
+    'texture_scale' : Vec2(1,1),
+    'texture_offset' : Vec2(0.0, 0.0),
+    'position_offsets' : [Vec3(i,0,0) for i in range(256)],
+    'rotation_offsets' : [Vec4(0) for i in range(256)],
+    'scale_multipliers' : [Vec3(1) for i in range(256)],
+}
+)
+
+
 
 if __name__ == '__main__':
-    app = Ursina()
-    
-    Entity(model='cube')
-    
-    delta = 0
-    camera.shader = grass_shader
-    def update():
-        global delta
-        delta += time.dt
-        camera.set_shader_input('iTime',delta)
-        camera.set_shader_input('cp',camera.position)
-        camera.set_shader_input('rotation',Vec3(tuple(i*360 for i in camera.rotation.normalized())))
-    
+    from ursina import *
+    import random
+    app = Ursina(vsync=False)
+
+    instances = []
+    Entity(model="../assets/world/world.obj", texture='grass', scale=128)
+    application.asset_folder = application.asset_folder.parent.parent
+    p = Entity(model=Cone(5), y=1, texture='brick')
+    p.model.uvs = [(v[0],v[1]) for v in p.model.vertices]
+    p.model.generate()
+    p.shader = instancing_shader
+    p.setInstanceCount(256)
+
+    for z in range(16):
+        for x in range(16):
+            e = Entity(position=Vec3(x, 0, z), color=color.lime, rotation_y=random.random()*360)
+            instances.append(e)
+            print(e.quaternion, Quat())
+
+    p.set_shader_input('position_offsets', [e.position*4 for e in instances])
+    p.set_shader_input('rotation_offsets', [e.quaternion for e in instances])
+    p.set_shader_input('scale_multipliers',[e.scale for e in instances])
+
+    print(len(p.model.vertices) * len(instances))
     EditorCamera()
-    
+
     app.run()

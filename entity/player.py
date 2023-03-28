@@ -43,6 +43,7 @@ class Player(Entity):
         self.frame = 0
         self.time = 0
         self.last_battery_drop = 0
+        self.world = None
         
     @property
     def mode(self):
