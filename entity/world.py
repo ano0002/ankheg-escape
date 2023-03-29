@@ -1,6 +1,6 @@
 from ursina import *
 from ursina.shaders import lit_with_shadows_shader, unlit_shader
-#from shader.fur_shader import *
+from shader.fur_shader import *
 from entity.ennemy import Ankheg
 from entity.menu import UI
 from entity.interior_ui import Custom_Button
@@ -39,7 +39,7 @@ class World(Entity):
 
     def load_ground(self):
         self.ground = Entity(model = "./assets/world/world.obj", scale = (50, 5, 50),texture="./assets/world/world.png", position = (0, 0, 0), collider = 'mesh',shader=lit_with_shadows_shader)
-        #self.grass = Fur(entity=self.ground, scale=500, layers=2, layerSize=0.005)
+        #self.grass = Fur(entity=self.ground, scale=500, layers=1, layerSize=0.005)
         
     def load_trees(self):
         tree_types = [
@@ -56,7 +56,7 @@ class World(Entity):
         self.trees = [Tree("..\\assets\\trees\\Models\\"+random.choice(tree_types), texture_path = '.\\assets\\trees\\Textures\\Colorsheet Tree Cold.png', position = (i[0]/2,i[1]/2,i[2]/2)) for i in json.load(open("trees.json", "r"))]
 
     def load_lights(self):       
-        self.sun = DirectionalLight(intensity=0.5)
+        self.sun = DirectionalLight(intensity=0.5,shadow_map_resolution=(4000,4000))
         self.sun.look_at((-1, -0.9, 0))
 
         AmbientLight(color=(0.1, 0.1, 0.1, 1.0))
