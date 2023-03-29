@@ -1,7 +1,7 @@
 from ursina import *
 
 class Ankheg(Entity):
-    def __init__(self,player, **kwargs):
+    def __init__(self,player,world, **kwargs):
         super().__init__(
             model = '../assets/monsters/ankheg.obj',
             scale = 0.3,
@@ -9,12 +9,15 @@ class Ankheg(Entity):
             color = color.rgb(150,150,150),
             collider = 'box',
             double_sided = True,
+            enabled = False,
             **kwargs
             )
+        self.world=world
         self.player = player
     
     def play_screamer(self):
-        Audio('../assets/sounds/monsterscream.mp3', autoplay = True)
+        self.enable()
+        self.world.monster_scream.play()
         self.player.mode = 2
         self.position = (0,-4.4,25)
         AmbientLight(color=(1, 1, 1, 1.0))

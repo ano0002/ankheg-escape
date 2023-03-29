@@ -1,5 +1,6 @@
 from ursina import *
 from ursina.shaders import unlit_shader
+from shader.light_blur import camera_gaussian_blur
 
 class Battery(Entity):
     def __init__(self, **kwargs):
@@ -27,7 +28,7 @@ class Player(Entity):
         self.gravity = 0.5
         self.velocity = Vec3(0, 0, 0)
         self.flashlight = Entity(parent=camera, model='../assets/flashlight/flashlight.obj', texture='../assets/flashlight/texture.jpg',\
-                                 double_sided = True ,scale= 0.0003,rotation = Vec3(2,-5,-60), position=(0.5, -0.2, 0.8), always_on_top = True)
+                                 flipped_faces = False ,scale= 0.0003,rotation = Vec3(2,-5,-60), position=(0.5, -0.2, 0.8))
         self.light_cone = Entity(parent=camera, model='../assets/flashlight/lightcone.obj', color=color.white50,\
                                  position=(0.5, -0.2, 0.8),rotation = Vec3(-85,0,0),scale=100,double_sided = True,shader = unlit_shader)
         self.flashlight_brightness = 0.3
@@ -55,7 +56,7 @@ class Player(Entity):
             mouse.locked = True
             mouse.visible = False
             self.flashlight.enabled = True
-            self.light_cone.enabled = True
+            self.light_cone.enabled = False
             self.battery_ui.enabled = True
         elif value in (1,2,3):#in (post,screamer,menu)
             mouse.locked = False
@@ -113,13 +114,6 @@ class Player(Entity):
     def input(self,key):
         if self.mode == 0:
             if key == "left mouse down":
-                """
-                self.toggling_light = True
-                self.light_cone.animate_scale(0, duration = 0.1,curve=curve.in_out_sine)
-                func =Func(Sequence(self.light_cone.,Func(setattr,self,"toggling_light",False)).start)
-                func.delay = 0.1
-                func()
-                """
                 if self.light_cone.enabled:
                     self.light_cone.fade_out(duration = .3)
                     function =Func(setattr,self.light_cone,"enabled",False)
