@@ -43,7 +43,7 @@ def input(key):
     if key == "e":
         world.toggle_right_pane()
 
-
+Entity(model = "cube", scale = (0.01, 100, 0.01), position = Vec3(0,0,0))
 
 
 app.run()

@@ -6,6 +6,7 @@ from entity.menu import UI
 from entity.interior_ui import Custom_Button
 from entity.exterior import Tree, Post
 from entity.spider import Spider
+from entity.audio3d import Audio3d
 import random
 import json
 
@@ -83,10 +84,11 @@ class World(Entity):
     def load_spiders(self):
         self.spiders = [Spider(position = Vec3(i,25,j)) for i in range(0,10) for j in range(0,10)]
 
+
     def load_sound(self): 
         self.background_sound = Audio("assets/sounds/atmosphere-dark.mp3", autoplay=False, loop=True, volume=0.5)
-        self.spider_hiss = Audio("assets/sounds/spider_hiss.mp3", autoplay=False, loop=False, volume=0.5)
-        self.monster_scream = Audio("assets/sounds/monster_scream.mp3", autoplay=False, loop=False, volume=0.5)
+        self.spider_hiss = Audio3d("assets/sounds/spider_hiss.mp3", autoplay=False, loop=False, volume=0.5,player = self.player)
+        self.monster_scream = Audio("assets/sounds/monster_scream.mp3", autoplay=False, loop=False, volume=1)
 
 
     def load_ui(self):
@@ -97,6 +99,7 @@ class World(Entity):
         self.time += time.dt
         if self.time > self.next_hiss:
             self.spider_hiss.play()
+            self.spider_hiss.position = (0,0,0)
             spider = random.choice(self.spiders)
             spider.run(self.player.position)
             invoke(spider.reset, delay=2.2)
