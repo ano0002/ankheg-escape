@@ -11,9 +11,6 @@ player = Player(position = (0,12.5, 0),rotation = (0,180,0), camera = camera, mo
 world = World(player = player)
 player.world = world
 
-#button = Custom_Button(scale = (1,1,1), position = (0, 2, 15), color=color.red)
-
-
 
 
 #Remove this to remove the fog
@@ -42,8 +39,6 @@ def input(key):
         world.toggle_left_pane()
     if key == "e":
         world.toggle_right_pane()
-
-Entity(model = "cube", scale = (0.01, 100, 0.01), position = Vec3(0,0,0))
 
 
 app.run()

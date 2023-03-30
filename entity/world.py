@@ -82,12 +82,12 @@ class World(Entity):
         self.door_enter = Custom_Button(scale = (0.01,1,0.75), position = (0.6,1.51,0.25), color=color.clear, text = "Enter", on_click = self.enter_post,animated=False, player=self.player)
 
     def load_spiders(self):
-        self.spiders = [Spider(position = Vec3(i,25,j)) for i in range(0,10) for j in range(0,10)]
+        self.spiders = [Spider(position = i,target = j) for i,j in json.load(open("spiders.json", "r"))]
 
 
     def load_sound(self): 
         self.background_sound = Audio("assets/sounds/atmosphere-dark.mp3", autoplay=False, loop=True, volume=0.5)
-        self.spider_hiss = Audio3d("assets/sounds/spider_hiss.mp3", autoplay=False, loop=False, volume=0.5,player = self.player)
+        self.spider_hiss = Audio3d("assets/sounds/spider_hiss.wav", autoplay=False, loop=False, volume=0.5,player = self.player,position = (0,0,0))
         self.monster_scream = Audio("assets/sounds/monster_scream.mp3", autoplay=False, loop=False, volume=1)
 
 
@@ -98,11 +98,12 @@ class World(Entity):
     def update(self):
         self.time += time.dt
         if self.time > self.next_hiss:
+            self.spider = random.choice(self.spiders)
             self.spider_hiss.play()
+            self.spider_hiss.parent = self.spider
             self.spider_hiss.position = (0,0,0)
-            spider = random.choice(self.spiders)
-            spider.run(self.player.position)
-            invoke(spider.reset, delay=2.2)
+            self.spider.run()
+            invoke(self.spider.reset, delay=2.2)
             self.next_hiss = self.time + random.randint(5,10)
 
 

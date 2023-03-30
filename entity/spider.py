@@ -1,29 +1,36 @@
 from ursina import *
 from direct.actor.Actor import Actor
+from ursina.shaders import unlit_shader
 
 
 class Spider(Entity):
-    def __init__(self, add_to_scene_entities=True, **kwargs):
-        super().__init__(add_to_scene_entities, **kwargs)
+    def __init__(self,target, **kwargs):
+        super().__init__(**kwargs)
         self.actor = Actor("./assets/monsters/animated_spider (1).glb")
 
         self.actor.reparentTo(self)
         self.actor.set_scale(0.3)
         self.actor.set_hpr(0,-90, 0)
         self.actor.loop("Armature|run")
+        self.shader = unlit_shader
         self.reset_position = self.position
         self.disable()
+        self.target = target
     
-    def run(self,position):
+    def run(self, position = None):
         self.enable()
         self.fade_in(duration=0.1)
+        if not position:
+            position = self.target
         self.animate_position(position, duration=2.3, curve=curve.linear)
         self.look_at(position)
-    
+        self.rotation = (0, self.rotation_y, 0)
+
     def reset(self):
         self.fade_out(duration=0.1)
         invoke(self.disable, delay=0.1)
-        self.position = self.reset_position
+        invoke(Func(setattr,self,"position",self.reset_position),delay = 0.2)
+
     
 
 if __name__ == '__main__':
