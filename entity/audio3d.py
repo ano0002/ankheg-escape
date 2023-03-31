@@ -9,4 +9,3 @@ class Audio3d(Audio):
     def update(self):
         self.balance = math.sin((self.world_position.xz-self.player.world_position.xz).normalized().signedAngleRad(self.player.forward.xz)/2)
         self.volume = 1 - min(distance(self.world_position, self.player.world_position)/self.max_distance,1)
-        print(self.balance,self.volume)
