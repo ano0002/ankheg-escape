@@ -13,7 +13,7 @@ class Spotlight(Entity):
         self.light_cone = Entity(parent=self, model='../assets/flashlight/lightcone.obj', color=color.white50,\
                                  position=(0,1,0),rotation = Vec3(-100,-90,0),scale=100,shader = unlit_shader,
                                  double_sided=True,collider= "mesh")
-
+        self.light_cone.enabled = False
     def toggle(self) -> None:
         self.light_cone.enabled = not self.light_cone.enabled
 

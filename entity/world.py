@@ -1,6 +1,5 @@
 from ursina import *
 from ursina.shaders import lit_with_shadows_shader, unlit_shader
-from shader.fur_shader import *
 from entity.ennemy import Ankheg
 from entity.menu import UI
 from entity.interior_ui import Custom_Button
@@ -9,6 +8,7 @@ from entity.spider import Spider
 from entity.audio3d import Audio3d
 from entity.intro import Intro
 from entity.spotlight import Spotlight
+from entity.game_over import GameOver
 import random
 import json
 
@@ -30,6 +30,7 @@ class World(Entity):
         self.next_pitch_correction =0
         self.is_growling = False
         self.side = 1
+        self.game_over = False
 
     def load_world(self) -> None:
         self.load_lights()
@@ -211,6 +212,9 @@ class World(Entity):
                         
         if self.player.mode == 2:
             self.ankheg_growl.stop()
+            if not self.game_over:
+                invoke(GameOver, delay=7)
+                self.game_over = True
     def input(self, key) -> None:
         if self.player.mode == 1:
             if key == "q":
