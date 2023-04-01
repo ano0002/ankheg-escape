@@ -1,7 +1,7 @@
 from ursina import *
 
 class UI_Button(Entity):
-    def __init__(self,main_ui, texture, scale = (1,1,1), on_click = None, **kwargs):
+    def __init__(self,main_ui, texture, scale = (1,1,1), on_click = None, **kwargs) -> None:
         super().__init__(
             model = 'quad',
             texture = texture,
@@ -12,22 +12,16 @@ class UI_Button(Entity):
             )
         self.on_click = on_click
         self.default_scale = scale
-    
-    def update(self):
-        if self.hovered:
-            self.scale = self.default_scale * 1.1
-        else:
-            self.scale = self.default_scale
-    
-    def input(self, key):
-        if self.hovered:
-            if key == 'left mouse down':
-                if self.on_click:
-                    self.on_click()
-            
+
+    def update(self) -> None:
+        self.scale = self.default_scale * 1.1 if self.hovered else self.default_scale
+
+    def input(self, key) -> None:
+        if self.hovered and key == 'left mouse down' and self.on_click:
+            self.on_click()
 
 class UI(Entity):
-    def __init__(self,player,start=None, **kwargs):
+    def __init__(self,player,start=None, **kwargs) -> None:
         super().__init__(parent = camera.ui,**kwargs)
         self.start = start
         self.play_button = UI_Button(main_ui=self,texture="./assets/ui/play_button.png", scale = Vec2(0.2,0.1), position = (-0.5,0), on_click = self._start)
@@ -40,24 +34,24 @@ class UI(Entity):
         for child in self.setting_menu:
             child.disable()
 
-    def update(self):
+    def update(self) -> None:
         if self.player.mode not in (0,2):
             self.cursor.position = mouse.position
         else:
             self.cursor.position = (-1,-1)
-    
-    def _start(self):
+
+    def _start(self) -> None:
         for child in self.main_menu:
             child.disable()
         self.start()
-    
-    def open_setting(self):
+
+    def open_setting(self) -> None:
         for child in self.main_menu:
             child.disable()
         for child in self.setting_menu:
             child.enable()
-    
-    def close_setting(self):
+
+    def close_setting(self) -> None:
         for child in self.setting_menu:
             child.disable()
         for child in self.main_menu:

@@ -1,8 +1,8 @@
 from ursina import *
-from ursina.shaders import lit_with_shadows_shader 
+from ursina.shaders import lit_with_shadows_shader
 
 class Tree(Entity):
-    def __init__(self, tree, texture_path,**kwargs):
+    def __init__(self, tree, texture_path,**kwargs) -> None:
         super().__init__(
             model =tree,
             texture = texture_path,
@@ -10,7 +10,7 @@ class Tree(Entity):
             )
 
 class Post(Entity):
-    def __init__(self,**kwargs):
+    def __init__(self,**kwargs) -> None:
         super().__init__(
             model ="../assets/post/security post.obj",
             texture = "../assets/post/texture.png",

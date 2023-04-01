@@ -1,10 +1,9 @@
 from ursina import *
 
 class Intro(Entity):
-    def __init__(self,on_end, **kwargs):
+    def __init__(self,on_end, **kwargs) -> None:
         super().__init__(**kwargs)
         self.overlay = Entity(parent=camera.ui, model='quad', color=color.black, scale=(2,1), z=-1)
-        
         self.text = Text("""You are the new security guard on the night shift, stationed at the abandoned research facility. It's your first night on the job, and you're feeling a little uneasy. The facility has been closed for years, and the rumors about what happened here have always been unsettling.
 
 You settle into your chair at the entrance security desk, and you begin to monitor the security cameras. The facility looks quiet, but something doesn't feel right. The shadows seem to be moving, and strange whispers echo through the speakers.
@@ -23,33 +22,32 @@ The abandoned research facility is a place of horror, and you must survive the n
         self.skip = Text("Press space to skip",scale=1, x=-.8, y=-.4,z=-2, line_height=1.2, max_width=1.5,resolution = 50,size = 0.04,wordwrap = 80	)
         self.on_end = on_end
         invoke(self.slide_in, delay=0.05*500)
-        
-    def _on_end(self):
+    def _on_end(self) -> None:
         destroy(self.overlay)
         destroy(self.text)
         destroy(self.skip)
         destroy(self)
         self.on_end()
-    
-    def slide_in(self):
+
+    def slide_in(self) -> None:
         try :
             self.text.animate_position(Vec2(-.8,1.4),duration=54,curve= curve.linear)
         except:
             pass
-    
-    def input(self,key):
+
+    def input(self,key) -> None:
         if key == "space":
             if not self.text.appear_sequence.finished:
                 self.text.appear(speed=0)
                 self.text.position = Vec2(-.8,1.4)
             else:
                 self._on_end()
-            
+
 if __name__ == '__main__':
     app = Ursina()
-    
+
     on_end = lambda: print("end")
     Intro(on_end = on_end)
-    
+
     app.run()
     

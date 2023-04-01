@@ -1,7 +1,7 @@
 from ursina import *
 
 class Custom_Button(Entity):
-    def __init__(self, text = 'button', scale = (1, 1, 1), on_click = None,animated = True,player = None, **kwargs):
+    def __init__(self, text = 'button', scale = (1, 1, 1), on_click = None,animated = True,player = None, **kwargs) -> None:
         super().__init__(
             model = 'cube',
             scale = scale,
@@ -13,7 +13,7 @@ class Custom_Button(Entity):
         self.animated = animated
         self.player = player
         self.text = Text(text, parent = camera.ui,visible = False,font = 'assets/fonts/Zombie_Holocaust.ttf',scale = 2)
-    def update(self):
+    def update(self) -> None:
         self.text.visible = False
         if self.player != None :
             if self.hovered and distance_xz(self.player.position, self.position) < 2:
@@ -26,12 +26,15 @@ class Custom_Button(Entity):
                 self.text.position = Vec3(0, -0.05,0)
             else :
                 self.text.position =  mouse.position + Vec3(0.05, -0.02,0)
-        
-    def input(self, key):
-        if self.player != None:
-            if self.hovered and distance_xz(self.player.position, self.position) < 2:
-                if key == 'left mouse down':
-                    if self.on_click:
-                        self.on_click()
+
+    def input(self, key) -> None:
+        if (
+            self.player != None
+            and self.hovered
+            and distance_xz(self.player.position, self.position) < 2
+            and key == 'left mouse down'
+            and self.on_click
+        ):
+            self.on_click()
 
 

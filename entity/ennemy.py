@@ -1,7 +1,7 @@
 from ursina import *
 
 class Ankheg(Entity):
-    def __init__(self,player,world, **kwargs):
+    def __init__(self,player,world, **kwargs) -> None:
         super().__init__(
             model = '../assets/monsters/ankheg.obj',
             scale = 0.3,
@@ -15,7 +15,7 @@ class Ankheg(Entity):
         self.world=world
         self.player = player
 
-    def play_screamer(self):
+    def play_screamer(self) -> None:
         self.enable()
         self.world.monster_scream.play()
         self.player.mode = 2
