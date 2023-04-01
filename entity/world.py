@@ -131,11 +131,9 @@ class World(Entity):
         self.monster_scream = Audio("assets/sounds/monster_scream.mp3", autoplay=False, loop=False, volume=1)
         
     def load_buttons(self)-> None:
-        self.button1 = Custom_Button( scale = 0.1, position = Vec3(-0.2, 1.4, -0.6),on_click= self.spotlight.toggle)
-        self.button2 = Custom_Button( scale = 0.1, position = Vec3(0, 1.4, -0.6))
-        self.button3 = Custom_Button(scale = 0.1, position = Vec3(0.2, 1.4, -0.6))
-        self.button4 = Custom_Button(scale= 0.07,position= Vec3(-0.6,1.4,-0.45),on_click=self.shades.toggle_right_pane)
-        self.button5 = Custom_Button(scale=0.07, position=Vec3(0.45,1.4,-0.45),on_click=self.shades.toggle_left_pane)
+        self.button1 = Custom_Button( scale = Vec3(0.1), position = Vec3(-0.2, 1.4, -0.6),on_click= self.spotlight.toggle,player=self.player)
+        self.button4 = Custom_Button(scale= Vec3(0.07),position= Vec3(-0.6,1.4,-0.45),on_click=self.shades.toggle_right_pane,player=self.player)
+        self.button5 = Custom_Button(scale= Vec3(0.07), position=Vec3(0.45,1.4,-0.45),on_click=self.shades.toggle_left_pane,player=self.player)
 
 
     def load_ui(self) -> None:
