@@ -40,7 +40,8 @@ def update() -> None:
 def input(key) -> None:
     if key == "f":
         world.ankheg.play_screamer()
-        
+    if key == "g":
+        world.spiders[0].play_screamer()
     """
     if key == "s":
         json.dump([tuple(i.position) for i in world.grass], open("grass.json", "w"))

@@ -122,7 +122,7 @@ class World(Entity):
         self.door_enter = Custom_Button(scale = (0.01,1,0.75), position = (0.6,1.51,0.25), color=color.clear, text = "Enter", on_click = self.enter_post,animated=False, player=self.player)
 
     def load_spiders(self) -> None:
-        self.spiders = [Spider(position = Vec3(*i)-Vec3(0,-0.1,0),target = Vec3(*j)-Vec3(0,-0.1,0)) for i,j in json.load(open("spiders.json", "r"))]
+        self.spiders = [Spider(position = Vec3(*i)-Vec3(0,-0.1,0),target = Vec3(*j)-Vec3(0,-0.1,0),world=self) for i,j in json.load(open("spiders.json", "r"))]
 
 
     def load_sound(self) -> None:
@@ -154,6 +154,11 @@ class World(Entity):
             self.spider.run()
             invoke(self.spider.reset, delay=2.2)
             self.next_hiss = self.time + random.randint(5,10)
+
+        for spider in self.spiders:
+            if spider.enabled:
+                if distance(spider.position, self.player.position) < 1:
+                    spider.play_screamer()
 
     def input(self, key) -> None:
         if self.player.mode == 1:

@@ -4,7 +4,7 @@ from ursina.shaders import unlit_shader
 
 
 class Spider(Entity):
-    def __init__(self,target, **kwargs) -> None:
+    def __init__(self,target,world, **kwargs) -> None:
         super().__init__(**kwargs)
         self.actor = Actor("./assets/monsters/animated_spider (1).glb")
 
@@ -16,6 +16,7 @@ class Spider(Entity):
         self.reset_position = self.position
         self.disable()
         self.target = target
+        self.world = world
 
     def run(self, position = None) -> None:
         self.enable()
@@ -31,6 +32,17 @@ class Spider(Entity):
         invoke(self.disable, delay=0.1)
         invoke(Func(setattr,self,"position",self.reset_position),delay = 0.2)
 
+    def play_screamer(self) -> None:
+        self.enable()
+        self.world.monster_scream.play()
+        self.world.player.mode = 2
+        self.position = (0,-4.4,25)
+        AmbientLight(color=(1, 1, 1, 1.0))
+        self.animate_position((0,-10,0), duration = .2)
+        camera.parent = scene
+        camera.position = (0,-5,-4)
+        camera.rotation = (5,2,0)
+        camera.shake(duration = 1, magnitude = 1)
 
 
 if __name__ == '__main__':
