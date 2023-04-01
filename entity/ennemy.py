@@ -22,7 +22,7 @@ class Ankheg(Entity):
         self.player.mode = 2
         self.position = (0,-4.4,25)
         AmbientLight(color=(1, 1, 1, 1.0))
-        self.animate_position((0,-10,0), duration = .2)
+        self.animate_position((0,-10,1.5), duration = .2)
         camera.parent = scene
         camera.position = (0,-5,-4)
         camera.rotation = (5,2,0)

@@ -153,6 +153,8 @@ class World(Entity):
 
 
     def update(self) -> None:
+        if self.intro:
+            return
         self.time += time.dt
         if self.time > self.next_hiss:
             self.spider = random.choice(self.spiders)
@@ -170,7 +172,7 @@ class World(Entity):
                         spider.play_screamer()
 
         if self.time > self.next_monster:
-            self.is_growing = True
+            self.is_growling = True
             self.side = random.choice([-1,1])
             if self.side == 1:
                 self.ankheg.position = (50,0,0)
@@ -179,26 +181,27 @@ class World(Entity):
                 self.ankheg.position = (-50,0,0)
                 self.ankheg.rotation = (0,0,0)
             self.ankheg.walk()
-            self.ankheg_walk.play()
-            self.ankheg_walk.parent = self.ankheg
-            self.ankheg_walk.position = (0,0,0)
             def on_end():
                 self.is_growling = False
                 self.total_monster_time = random.randint(5,10)
                 self.ankheg.reset()
             invoke(on_end, delay=self.total_monster_time)
-            self.next_monster = self.time + random.randint(20,35)
-            self.next_pitch_correction = self.time + 2
+            self.next_monster = self.time ++ random.randint(20,35)
 
         if self.is_growling:
             if self.player.mode == 0:
                 self.ankheg.play_screamer()
             else:
-                if self.side == 1 and self.shades.status()["left"]["is_open"] == True:
-                    self.ankheg.play_screamer()
-                elif self.side == -1 and self.shades.status()["right"]["is_open"] == True:
-                    self.ankheg.play_screamer()
-                        
+                if self.player.mode == 1:
+                    if self.side == 1 and self.shades.status()["left_pane"]["is_open"] == True:
+                        self.ankheg_growl.stop()
+                        self.ankheg.play_screamer()
+                    elif self.side == -1 and self.shades.status()["right_pane"]["is_open"] == True:
+                        self.ankheg_growl.stop()
+                        self.ankheg.play_screamer()
+                    else:
+                        #not self.ankheg_growl.playing and self.ankheg_growl.play()
+                        pass
 
     def input(self, key) -> None:
         if self.player.mode == 1:
