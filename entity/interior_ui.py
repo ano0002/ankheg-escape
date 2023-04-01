@@ -33,5 +33,5 @@ class Custom_Button(Entity):
                 if key == 'left mouse down':
                     if self.on_click:
                         self.on_click()
-                    
+
 

@@ -14,7 +14,7 @@ class Ankheg(Entity):
             )
         self.world=world
         self.player = player
-    
+
     def play_screamer(self):
         self.enable()
         self.world.monster_scream.play()
@@ -26,7 +26,7 @@ class Ankheg(Entity):
         camera.position = (0,-5,-4)
         camera.rotation = (5,2,0)
         camera.shake(duration = 1, magnitude = 1)
-        
+
 
 
 if __name__ == '__main__':

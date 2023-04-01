@@ -32,9 +32,7 @@ def update():
         (held_keys['w']-held_keys['s']) * time.dt * 0.5
     )
     """
-    
-    
-    
+
 def input(key):
     if key == "f":
         world.ankheg.play_screamer()
