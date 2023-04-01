@@ -2,6 +2,8 @@
  pyweek 35
 
 
+Press q and e to close the right and left window shades.
+Use wasd to move, and the mouse to look around. 
 
 Sound Effect from Pixabay
 
