@@ -24,6 +24,10 @@ class World(Entity):
         self.load_ui()
         self.time = 0
         self.next_hiss = random.randint(5,10)
+        self.next_monster = random.randint(10,15)
+        self.total_monster_time = random.randint(5,10)
+        self.monster_time = 0
+        
 
     def load_world(self) -> None:
         self.load_lights()
@@ -131,6 +135,7 @@ class World(Entity):
         self.monster_scream = Audio("assets/sounds/monster_scream.mp3", autoplay=False, loop=False, volume=1)
         self.ankheg_walk = Audio3d("assets/sounds/ankheg walk.mp3", volume=0.5,player = self.player,position = (0,0,0))
         self.spider_steps = Audio("assets/sounds/spider_steps.mp3", autoplay=False, loop=False, volume=1)
+        self.ankheg_growl = Audio("assets/sounds/ankheg_growl.mp3", autoplay=False,loop=True, volume=1)
 
     def load_buttons(self)-> None:
         self.button1 = Custom_Button(text="Toggle light",scale = Vec3(0.1), position = Vec3(-0.2, 1.4, -0.6),on_click= self.spotlight.toggle,player=self.player)
@@ -159,7 +164,28 @@ class World(Entity):
         for spider in self.spiders:
             if spider.enabled:
                 if distance(spider.position, self.player.position) < 1:
-                    spider.play_screamer()
+                    if not self.player.light_cone.enabled :
+                        spider.play_screamer()
+
+        if self.time > self.next_monster:
+            self.side = random.choice([-1,1])
+            if self.side == 1:
+                self.ankheg.position = (50,0,0)
+                self.ankheg.rotation = (0,180,0)
+            else:
+                self.ankheg.position = (-50,0,0)
+                self.ankheg.rotation = (0,0,0)
+            self.ankheg.walk()
+            self.ankheg_walk.play()
+            self.ankheg_walk.parent = self.ankheg
+            self.ankheg_walk.position = (0,0,0)
+            invoke(self.ankheg.reset, delay=self.total_monster_time)
+            
+        
+        if self.time > self.next_monster+self.total_monster_time:
+            self.ankheg_growl.play()
+            self.next_monster = self.time + random.randint(10,20)
+            self.total_monster_time = random.randint(5,10)
 
     def input(self, key) -> None:
         if self.player.mode == 1:
@@ -168,6 +194,9 @@ class World(Entity):
             if key == "e":
                 self.shades.toggle_right_pane()
 
+        
+        
+        
     def start(self):
         self.background_sound.play()
         self.enter_post()

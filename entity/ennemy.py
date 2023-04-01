@@ -14,6 +14,7 @@ class Ankheg(Entity):
             )
         self.world=world
         self.player = player
+        self.eyes = Entity(model="quad",scale = (0.5,0.5),texture = "../assets/monsters/eyes.jpg",position = (0,0,0),billboard = True)
 
     def play_screamer(self) -> None:
         self.enable()
@@ -27,7 +28,16 @@ class Ankheg(Entity):
         camera.rotation = (5,2,0)
         camera.shake(duration = 1, magnitude = 1)
 
+    def walk(self) -> None:
+        self.eyes.animate_position((0,0,0), duration = 1)
+        invoke(self.walk,delay = 1.5)
 
+    def reset(self) -> None:
+        self.fade_out(duration=0.1)
+        self.eyes.disable()
+        self.world.ankheg_growl.stop()
+        invoke(self.disable, delay=0.1)
+        invoke(Func(setattr,self,"position", (0,-4.4,25)),delay = 0.2)
 
 if __name__ == '__main__':
     app = Ursina()

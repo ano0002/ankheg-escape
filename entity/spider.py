@@ -33,6 +33,13 @@ class Spider(Entity):
         invoke(self.disable, delay=0.1)
         invoke(Func(setattr,self,"position",self.reset_position),delay = 0.2)
 
+    def update(self) -> None:
+        if self.enabled :
+            if self.world.player.light_cone.enabled :
+                ray = raycast(self.position,(0,1,0))
+                if ray.hit:
+                    self.disable()
+
     def play_screamer(self) -> None:
         self.enable()
         self.world.spider_steps.play()
