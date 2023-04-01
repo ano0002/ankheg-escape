@@ -1,4 +1,3 @@
-from typing import Tuple
 from ursina import *
 from ursina.shaders import lit_with_shadows_shader, unlit_shader
 from shader.fur_shader import *
@@ -111,7 +110,7 @@ class World(Entity):
 
     def load_post(self) -> None:
         self.post = Post(position = (-0.7,1,0),rotation= (0,180,0))
-        #self.load_panes()
+        self.shades = Shades(self)
         self.load_door()
 
     def load_door(self) -> None:
@@ -126,12 +125,13 @@ class World(Entity):
         self.background_sound = Audio("assets/sounds/atmosphere-dark.mp3", autoplay=False, loop=True, volume=0.5)
         self.spider_hiss = Audio3d("assets/sounds/spider_hiss.wav", volume=0.5,player = self.player,position = (0,0,0))
         self.monster_scream = Audio("assets/sounds/monster_scream.mp3", autoplay=False, loop=False, volume=1)
+        
     def load_buttons(self)-> None:
         self.button1 = Custom_Button( scale = 0.1, position = Vec3(-0.2, 1.4, -0.6))
         self.button2 = Custom_Button( scale = 0.1, position = Vec3(0, 1.4, -0.6))
         self.button3 = Custom_Button(scale = 0.1, position = Vec3(0.2, 1.4, -0.6))
-        self.button4 = Custom_Button(scale= 0.07,position= Vec3(-0.6,1.4,-0.45))
-        self.button5 = Custom_Button(scale=0.07, position=Vec3(0.45,1.4,-0.45))
+        self.button4 = Custom_Button(scale= 0.07,position= Vec3(-0.6,1.4,-0.45),on_click=self.shades.toggle_right_pane)
+        self.button5 = Custom_Button(scale=0.07, position=Vec3(0.45,1.4,-0.45),on_click=self.shades.toggle_left_pane)
         self.button1.on_click = self.spotlight
 
     def spotlight(self):
@@ -177,49 +177,71 @@ class World(Entity):
 class Shades(Entity):
     def __init__(self,world:World) -> None:
         super().__init__(self)
-        self.left_pane = Entity(model = "cube", scale = (0.01,0,0.67), position = Vec3(0.535, 2.01, -0.355), \
-            texture = "./assets/world/roller-shutter.jpg",shader = unlit_shader)
-        self.right_pane = Entity(model = "cube", scale = (0.01,0,0.67), position = Vec3(-0.65, 2.01, -0.325), \
-            texture = "./assets/world/roller-shutter.jpg",shader = unlit_shader)
-        self.durability = 100
+        self.left_pane = Shade(position = Vec3(0.535, 2.01, -0.355))
+        self.right_pane = Shade(position = Vec3(-0.65, 2.01, -0.325))
         self.world = world
         
 
     def toggle_left_pane(self) -> None:
-        if self.left_pane.scale_y <0.3:
-            self.close_left_pane()
-        else:
-            self.open_left_pane()
-
-    def close_left_pane(self)-> None:
-        self.left_pane.animate_position((0.535, 1.71, -0.355), duration=0.2, curve=curve.linear)
-        self.left_pane.animate_scale((0.01,0.6,0.67), duration=0.2, curve=curve.linear)
-
-    def open_left_pane(self)-> None:
-        self.left_pane.animate_position((0.535, 2.01, -0.355), duration=0.2, curve=curve.linear)
-        self.left_pane.animate_scale((0.01,0,0.67), duration=0.2, curve=curve.linear)
+        self.left_pane.toggle()
 
 
     def toggle_right_pane(self)-> None:
-        if self.right_pane.scale_y <0.3:
-            self.close_right_pane()
-        else:
-            self.open_right_pane()
+        self.right_pane.toggle()
 
-    def close_right_pane(self)-> None:
-        self.right_pane.animate_position((-0.65, 1.71, -0.325), duration=0.2, curve=curve.linear)
-        self.right_pane.animate_scale((0.01,0.6,0.67), duration=0.2, curve=curve.linear)
-
-    def open_right_pane(self) -> None:
-        self.right_pane.animate_position(Vec3(-0.65, 2.01, -0.325), duration=0.2, curve=curve.linear)
-        self.right_pane.animate_scale((0.01,0,0.67), duration=0.2, curve=curve.linear)
-
-    def status(self) -> Tuple[bool,bool]:
-        return (self.left_pane.scale_y >= 0.3, self.right_pane.scale_y >= 0.3)
+    def status(self) -> dict[dict[int,bool],dict[int,bool]]:
+        return {
+            "left_pane": {
+                "durability": self.left_pane.durability,
+                "is_open": self.left_pane.is_open
+            },
+            "right_pane": {
+                "durability": self.right_pane.durability,
+                "is_open": self.right_pane.is_open
+            }
+        }
     
     def update(self) -> None:
-        if self.status()[0]:
-            
+        if not self.status()["left_pane"]["is_open"]:
+            pass
 
-
-shades = Shades()
+class Shade(Entity):
+    def __init__(self, **kwargs):
+        super().__init__(model = "cube", scale = (0.01,0,0.67),texture = "./assets/world/roller-shutter.jpg",shader = unlit_shader,**kwargs)
+        self.durability = 100
+        self.is_open = True
+    
+    @property
+    def durability(self) -> int:
+        return self._durability
+    
+    @durability.setter
+    def durability(self, value: int) -> None:
+        if value <= 0:
+            self._durability = 0
+            self.texture_offset = (.75,0)
+        elif value > 100:
+            self._durability = 100
+        else:
+            self._durability = value
+    
+    def toggle(self) -> None:
+        if self.scale_y <0.3:
+            self.close()
+        else:
+            self.open()
+        self.is_open = not self.is_open
+    
+    def close(self)-> None:
+        self.animate_position((self.x, self.y-0.3, self.z), duration=0.2, curve=curve.linear)
+        self.animate_scale((self.scale_x,0.6,self.scale_z), duration=0.2, curve=curve.linear)
+    
+    def open(self)-> None:
+        self.animate_position((self.x, self.y+0.3, self.z), duration=0.2, curve=curve.linear)
+        self.animate_scale((self.scale_x,0,self.scale_z), duration=0.2, curve=curve.linear)
+        
+class Structural_Integrity_Display(Entity):
+    def __init__(self,shade, **kwargs):
+        super().__init__(parent = shade,model = "quad", scale = (0.01,0,0.67),texture = "../assets/ui/cle a molette.png",texture_scale=(4,1),shader = unlit_shader,**kwargs)
+        
+        self.durability = 100

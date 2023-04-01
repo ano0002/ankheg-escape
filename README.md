@@ -22,4 +22,4 @@ You feel its acid spray burning your skin, and you scream in agony. Just when yo
 
 It was all just a nightmare, but the fear lingers. You realize that the rumors about the facility might be true, and the ankheg might still be out there, waiting for its next victim.
 
-The abandoned research facility is a place of horror, and you must survive the night shift if you want to uncover the truth about what really happened here. The ankheg is still out there, waiting to hunt you down. Will you be able to make it to morning, or will you become the next victim of the ankheg's endless hunger?
+The abandoned research facility is a place of horror, and you must survive the night shift if you want to uncover the truth about what really happened here. The ankheg is still out there, waiting to hunt you down. Will you be able to make it to morning, or will you become the next victim of the ankheg's endless hunger?  

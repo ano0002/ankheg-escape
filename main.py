@@ -1,7 +1,6 @@
 from ursina import *
 from entity.player import Player
 from entity.world import World
-import json
 
 app = Ursina()
 
@@ -17,7 +16,7 @@ player.world = world
 #Remove this to remove the fog
 fog = []
 for i in range(10):
-    fog.append(Entity(parent=player,color = color.rgba(0,0,0,i*0.1), model='sky_dome', scale=2+i*4,texture='assets/world/sky.jpg'))
+    fog.append(Entity(parent=player,color = color.rgba(0,0,0,i*0.1), model='sky_dome', scale=1+i*4,texture='assets/world/sky.jpg'))
 
 
 def update():
