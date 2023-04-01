@@ -189,7 +189,7 @@ class World(Entity):
                 self.ankheg.reset()
             invoke(on_end, delay=self.total_monster_time)
             invoke(on_start, delay=10)
-            self.next_monster = self.time + random.randint(20,35)
+            self.next_monster = self.time +self.total_monster_time+ random.randint(10,15)
 
         if self.is_growling:
             if self.player.mode == 0:
@@ -203,8 +203,9 @@ class World(Entity):
                         self.ankheg_growl.stop()
                         self.ankheg.play_screamer()
                     else:
-                        #not self.ankheg_growl.playing and self.ankheg_growl.play()
-                        pass
+                        if not self.ankheg_growl.playing :
+                            self.ankheg_growl.play()
+                        
         if self.player.mode == 2:
             self.ankheg_growl.stop()
     def input(self, key) -> None:
