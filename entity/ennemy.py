@@ -30,8 +30,8 @@ class Ankheg(Entity):
 
     def walk(self,side) -> None:
         self.eyes.enable()
-        self.eyes.position = self.position 
-        self.eyes.animate_position(camera.position+Vec3(2*side,0,-20), duration = 10,curve = curve.linear)
+        self.eyes.position = self.position
+        self.eyes.animate_position(camera.position+Vec3(2*side,0,-30), duration = 6,curve = curve.linear)
         invoke(self.world.ankheg_growl.play,delay = 10)
         
 

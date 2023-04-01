@@ -214,9 +214,7 @@ class World(Entity):
             if key == "e":
                 self.shades.toggle_right_pane()
 
-        
-        
-        
+
     def start(self):
         self.background_sound.play()
         self.enter_post()
@@ -310,7 +308,7 @@ class Shade(Entity):
         elif self.is_open and self.timer > 0.4:
             self.durability += 1
             self.timer = 0
-            
+
 
     def close(self)-> None:
         self.animate_position((self.x, self.y-0.3, self.z), duration=0.2, curve=curve.linear)
