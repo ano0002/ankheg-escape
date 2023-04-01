@@ -22,4 +22,7 @@ if __name__ == '__main__':
     app = Ursina()
     spotlight = Spotlight()
     EditorCamera()
+    def input(key) -> None:
+        if key == 'space':
+            spotlight.toggle()
     app.run()
