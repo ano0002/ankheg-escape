@@ -44,7 +44,8 @@ class World(Entity):
         #self.grass = Fur(entity=self.ground, scale=500, layers=1, layerSize=0.005)
         
     def load_grass(self):
-        grass_types = [
+        return
+        grass_types = [load_model( "./assets/bushes/models/"+i) for i in [
             "Grass_001.fbx",
             "Grass_002.fbx",
             "Grass_003.fbx",
@@ -52,11 +53,27 @@ class World(Entity):
             "Grass_005.fbx",
             "Grass_006.fbx",
             "Grass_007.fbx"
-        ]
-
-        grass_type = random.randint(0, len(grass_types)-1)
-        self.blade = Entity(model="./assets\\bushes\\models\\"+grass_types[grass_type], texture_path = '.\\assets\\trees\\Textures\\Colorsheet Tree Cold.png', position = (0,0,0))
+        ]]            
         self.grass = []
+        for x in range(-10,10):
+            for z in range(-10,10) :
+                x_offset = x / 5 + random.random() / 20
+                z_offset = z / 5 + random.random() / 20
+                ray = raycast(origin=(x_offset,0,z_offset), direction=(0,1,0))
+                if ray.hit :
+                    grass_type = random.choice(grass_types)
+                    scale = 0.005
+
+                    self.grass.append(
+                        Entity(
+                            model=grass_type,
+                            scale=scale,
+                            position=(x_offset, ray.world_point.y, z_offset),
+                            rotation=(0, 0, 0),
+                            texture_scale=(1, 1),
+                            shader=lit_with_shadows_shader,
+                        )
+                    )
     
             
     def load_trees(self):
@@ -121,22 +138,6 @@ class World(Entity):
             self.spider.run()
             invoke(self.spider.reset, delay=2.2)
             self.next_hiss = self.time + random.randint(5,10)
-
-        if mouse.world_point:
-            self.blade.position = mouse.world_point
-    
-    def input(self, key):
-        if key == "left mouse down":
-            grass_types = [
-                "Grass_001.fbx",
-                "Grass_002.fbx",
-                "Grass_003.fbx",
-                "Grass_004.fbx",
-                "Grass_005.fbx",
-                "Grass_006.fbx",
-                "Grass_007.fbx"
-            ]
-            self.grass.append(Entity("..\\assets\\bushes\\models\\"+random.choice(grass_types), texture_path = '.\\assets\\bushes\\T_Grass.png', position = mouse.world_point))
 
     def start(self):
         self.background_sound.play()

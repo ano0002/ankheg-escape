@@ -30,7 +30,7 @@ class Player(Entity):
         self.flashlight = Entity(parent=camera, model='../assets/flashlight/flashlight.obj', texture='../assets/flashlight/texture.jpg',\
                                  flipped_faces = False ,scale= 0.0003,rotation = Vec3(2,-5,-60), position=(0.5, -0.2, 0.8))
         self.light_cone = Entity(parent=camera, model='../assets/flashlight/lightcone.obj', color=color.white50,\
-                                 position=(0.5, -0.2, 0.8),rotation = Vec3(-85,0,0),scale=100,double_sided = True,shader = unlit_shader)
+                                 position=(0.5, -0.2, 0.8),rotation = Vec3(95,0,0),scale=100,double_sided = True,shader = unlit_shader)
         self.flashlight_brightness = 0.3
         self.battery_ui = Battery()
         self.battery = 100
