@@ -128,9 +128,9 @@ class Player(Entity):
                     self.light_cone.color = color.rgba(255,255,255,self.battery/100*self.flashlight_brightness*255)
         elif self.mode == 1 :
             if key == "a":
-                self.animate_rotation((0, round(self.rotation_y/90)*90-90,0), duration = 0.2,curve=curve.in_out_sine)
+                self.animate_rotation((0, round(self.rotation_y/90)*90-90,0), duration = 0.1,curve=curve.in_out_sine)
             elif key == "d":
-                self.animate_rotation((0, round(self.rotation_y/90)*90+90,0), duration = 0.2,curve=curve.in_out_sine)
+                self.animate_rotation((0, round(self.rotation_y/90)*90+90,0), duration = 0.1,curve=curve.in_out_sine)
 
 def look_at(entity, target, axis='up') -> None:
     if isinstance(target, Entity):

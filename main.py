@@ -16,10 +16,16 @@ player.world = world
 #Remove this to remove the fog
 fog = []
 for i in range(10):
-    fog.append(Entity(parent=player,color = color.rgba(0,0,0,i*0.1), model='sky_dome', scale=1+i*4,texture='assets/world/sky.jpg'))
+    fog.append(Entity(parent=player,color = color.rgba(0,0,0,i*0.1), model='sky_dome', scale=1+i*2,texture='assets/world/sky.jpg'))
 
 
 def update() -> None:
+    distance = distance_xz(player.position, world.post.position)
+    for i in range(10):
+        fog[i].scale = 1-distance*0.1+i*(2-distance*0.1)
+    if distance > 15 and player.mode == 0:
+        world.ankheg.play_screamer()
+    
     """
     if distance_xz(player.position, post.position) >5 and player.mode != 2:
         ankheg.play_screamer()
@@ -34,6 +40,7 @@ def update() -> None:
 def input(key) -> None:
     if key == "f":
         world.ankheg.play_screamer()
+        
     """
     if key == "s":
         json.dump([tuple(i.position) for i in world.grass], open("grass.json", "w"))

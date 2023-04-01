@@ -29,7 +29,7 @@ class UI(Entity):
         self.main_menu = [self.play_button,self.setting_button]
         self.setting_menu = []
         self.setting_menu.append(UI_Button(main_ui=self,texture="./assets/ui/close_button.png", scale = Vec2(0.1,0.1), position = (-0.5,0.2), on_click = self.close_setting))
-        self.cursor = Entity(parent = camera.ui, model = 'quad', scale = (0.04,0.04), origin = (-0.5,0), texture = './assets/ui/cursor.png')
+        self.cursor = Entity(parent = camera.ui, model = 'quad', scale = (0.04,0.04), origin = (-0.5,0.5), texture = './assets/ui/cursor.png')
         self.player = player
         for child in self.setting_menu:
             child.disable()
