@@ -105,7 +105,7 @@ class Player(Entity):
 
             self.rotation_y += mouse.velocity[0] * self.rotation_speed
             camera.rotation_x -= mouse.velocity[1] * self.rotation_speed
-            ray = raycast(self.position, total_movement.normalized(),distance=abs(sum(total_movement))+0.1)
+            ray = raycast(self.position, total_movement.normalized(),distance=abs(sum(total_movement))+0.1,ignore=(self.light_cone,self.world.spotlight.light_cone,))
             if not ray.hit:
                 self.position += total_movement
             if total_movement != Vec3(0,0,0):

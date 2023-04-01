@@ -23,7 +23,7 @@ class Spider(Entity):
         self.fade_in(duration=0.1)
         if not position:
             position = self.target
-        self.animate_position(position, duration=duration, curve=curve.linear)
+        self.animate_position(position, duration=duration, curve=curve.in_sine)
         self.look_at(position)
         self.rotation_y += 180
         self.rotation = (0, self.rotation_y, 0)
@@ -46,7 +46,7 @@ class Spider(Entity):
         self.world.player.mode = 2
         self.position = (0,-5.5,10)
         AmbientLight(color=(1, 1, 1, 1.0))
-        self.animate_position((0,-5.5,-3), duration = 6,curve = curve.linear)
+        self.animate_position((0,-5.5,-3), duration = 6,curve = curve.in_sine)
         for i in range(-10, 10):
             spider = Spider(position=(i/10, -5.5, 10),target = (i/10,-5.5,-3), world = self.world)
             invoke(Func(spider.run,duration=6), delay = random.random()*5)
@@ -55,12 +55,12 @@ class Spider(Entity):
         camera.position = (0,-5,-4)
         camera.rotation = (5,2,0)
         def scream(spider):
-            spider.position = (0,-5.2,-3)
+            spider.position = (0,-5.2,-3.5)
             spider.world.spider_hiss.position = (0,-5.2,-3)
             spider.world.spider_hiss.play()
 
             
-        invoke(scream,self,delay = 7)
+        invoke(scream,self,delay = 6)
 
 
 if __name__ == '__main__':

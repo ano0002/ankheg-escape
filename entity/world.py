@@ -187,24 +187,28 @@ class World(Entity):
                 self.is_growling = False
                 self.total_monster_time = random.randint(5,10)
                 self.ankheg.reset()
-            invoke(on_end, delay=self.total_monster_time)
+            invoke(on_end, delay=10+self.total_monster_time)
             invoke(on_start, delay=10)
-            self.next_monster = self.time + random.randint(20,35)
+            self.next_monster = self.next_monster +10+self.total_monster_time+ random.randint(10,15)
 
         if self.is_growling:
             if self.player.mode == 0:
+                print("here")
                 self.ankheg.play_screamer()
             else:
                 if self.player.mode == 1:
                     if self.side == 1 and self.shades.status()["left_pane"]["is_open"] == True:
+                        print("there")
                         self.ankheg_growl.stop()
                         self.ankheg.play_screamer()
                     elif self.side == -1 and self.shades.status()["right_pane"]["is_open"] == True:
+                        print("it's here")
                         self.ankheg_growl.stop()
                         self.ankheg.play_screamer()
                     else:
-                        #not self.ankheg_growl.playing and self.ankheg_growl.play()
-                        pass
+                        if not self.ankheg_growl.playing :
+                            self.ankheg_growl.play()
+                        
         if self.player.mode == 2:
             self.ankheg_growl.stop()
     def input(self, key) -> None:
@@ -302,10 +306,10 @@ class Shade(Entity):
 
     def update(self) -> None:
         self.timer += time.dt
-        if not self.is_open and self.timer > 0.2:
+        if not self.is_open and self.timer > 0.6:
             self.durability -= 1
             self.timer = 0
-        elif self.is_open and self.timer > 0.4:
+        elif self.is_open and self.timer > 1.2:
             self.durability += 1
             self.timer = 0
 

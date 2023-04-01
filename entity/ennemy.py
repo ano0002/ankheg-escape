@@ -37,8 +37,6 @@ class Ankheg(Entity):
 
     def reset(self) -> None:
         self.eyes.disable()
-        invoke(self.disable, delay=0.1)
-        invoke(Func(setattr,self,"position", (0,-4.4,25)),delay = 0.2)
 
 if __name__ == '__main__':
     app = Ursina()
