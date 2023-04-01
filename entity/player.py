@@ -1,6 +1,6 @@
 from ursina import *
 from ursina.shaders import unlit_shader
-from shader.light_blur import camera_gaussian_blur
+from panda3d.core import Quat
 
 class Battery(Entity):
     def __init__(self, **kwargs):
@@ -45,6 +45,7 @@ class Player(Entity):
         self.time = 0
         self.last_battery_drop = 0
         self.world = None
+        self.footsteps = Audio("assets/sounds/footsteps.wav", autoplay=False, volume=0.5)
         
     @property
     def mode(self):
@@ -109,8 +110,14 @@ class Player(Entity):
             ray = raycast(self.position, total_movement.normalized(),distance=abs(sum(total_movement))+0.1)
             if not ray.hit:
                 self.position += total_movement
+            if total_movement != Vec3(0,0,0):
+                if not self.footsteps.playing:
+                    self.footsteps.pitch = random.uniform(0.5,1.5)
+                    self.footsteps.play()
         camera.rotation_x = clamp(camera.rotation_x, -90, 90)
-            
+        
+
+        
     def input(self,key):
         if self.mode == 0:
             if key == "left mouse down":
@@ -126,4 +133,25 @@ class Player(Entity):
                 self.animate_rotation((0, round(self.rotation_y/90)*90-90,0), duration = 0.2,curve=curve.in_out_sine)
             elif key == "d":
                 self.animate_rotation((0, round(self.rotation_y/90)*90+90,0), duration = 0.2,curve=curve.in_out_sine)
-                
+    
+def look_at(entity, target, axis='up'):
+    if isinstance(target, Entity):
+        target = Vec3(*target.world_position)
+    elif not isinstance(target, Vec3):
+        target = Vec3(*target)
+
+    up_axis = entity.up
+    entity.lookAt(target, up_axis)
+
+    if axis == 'forward':
+        return
+
+    rotation_offset = {
+        'back'    : Quat(0,0,1,0),
+        'down'    : Quat(-.707,.707,0,0),
+        'up'      : Quat(-.707,-.707,0,0),
+        'right'   : Quat(-.707,0,.707,0),
+        'left'    : Quat(-.707,0,-.707,0),
+        }[axis]
+
+    entity.setQuat(rotation_offset * entity.getQuat())

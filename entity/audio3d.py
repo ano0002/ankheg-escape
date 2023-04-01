@@ -15,17 +15,15 @@ if __name__ == "__main__":
     from ursina.prefabs.first_person_controller import FirstPersonController
     app = Ursina()
     
-    ground = Entity(model= Terrain('heightmap_1'),scale = (50,2,50),texture = 'heightmap_1',collider = 'mesh')
+    ground = Entity(model= Terrain('heightmap_1',skip=8),scale = (50,2,50),texture = 'heightmap_1',collider = 'mesh')
     
     player = FirstPersonController()
     
     audio = Audio3d('./spider_hiss.wav',player)
     
-    def update():
-        print("balance :",audio.balance)
     
     def input(key):
-        if key == "space":
+        if key == "f":
             audio.play()
 
     app.run()

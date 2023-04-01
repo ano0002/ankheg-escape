@@ -32,6 +32,7 @@ class World(Entity):
         self.load_post()
         self.load_screamer()
         self.load_spiders()
+        self.load_grass()
         self.sky = Sky(texture='assets/world/sky.jpg', scale=1000, double_sided=True)
 
     def load_camp(self):
@@ -42,6 +43,22 @@ class World(Entity):
         self.ground = Entity(model = "./assets/world/world.obj", scale = (50, 5, 50),texture="./assets/world/world.png", position = (0, 0, 0), collider = 'mesh',shader=lit_with_shadows_shader)
         #self.grass = Fur(entity=self.ground, scale=500, layers=1, layerSize=0.005)
         
+    def load_grass(self):
+        grass_types = [
+            "Grass_001.fbx",
+            "Grass_002.fbx",
+            "Grass_003.fbx",
+            "Grass_004.fbx",
+            "Grass_005.fbx",
+            "Grass_006.fbx",
+            "Grass_007.fbx"
+        ]
+
+        grass_type = random.randint(0, len(grass_types)-1)
+        self.blade = Entity(model="./assets\\bushes\\models\\"+grass_types[grass_type], texture_path = '.\\assets\\trees\\Textures\\Colorsheet Tree Cold.png', position = (0,0,0))
+        self.grass = []
+    
+            
     def load_trees(self):
         tree_types = [
             "Tree Type0 01.dae",
@@ -52,9 +69,9 @@ class World(Entity):
             "Tree Type0 06.dae"
         ]
 
-        tree_type = random.randint(0, len(tree_types)-1)
+        self.trees = [Tree("./assets/trees/Models/"+random.choice(tree_types), texture_path = './assets/trees/Textures/Colorsheet Tree Cold.png',position = i, rotation = (0,random.randint(0,360),0)) for i in json.load(open("./trees.json"))]
 
-        self.trees = [Tree("..\\assets\\trees\\Models\\"+random.choice(tree_types), texture_path = '.\\assets\\trees\\Textures\\Colorsheet Tree Cold.png', position = (i[0]/2,i[1]/2,i[2]/2)) for i in json.load(open("trees.json", "r"))]
+
 
     def load_lights(self):       
         self.sun = DirectionalLight(intensity=0.5,shadow_map_resolution=(4000,4000))
@@ -87,9 +104,8 @@ class World(Entity):
 
     def load_sound(self): 
         self.background_sound = Audio("assets/sounds/atmosphere-dark.mp3", autoplay=False, loop=True, volume=0.5)
-        self.spider_hiss = Audio3d("assets/sounds/spider_hiss.wav", autoplay=False, loop=False, volume=0.5,player = self.player,position = (0,0,0))
+        self.spider_hiss = Audio3d("assets/sounds/spider_hiss.wav", volume=0.5,player = self.player,position = (0,0,0))
         self.monster_scream = Audio("assets/sounds/monster_scream.mp3", autoplay=False, loop=False, volume=1)
-
 
     def load_ui(self):
         self.ui = UI(start = self.start,player = self.player)
@@ -106,6 +122,21 @@ class World(Entity):
             invoke(self.spider.reset, delay=2.2)
             self.next_hiss = self.time + random.randint(5,10)
 
+        if mouse.world_point:
+            self.blade.position = mouse.world_point
+    
+    def input(self, key):
+        if key == "left mouse down":
+            grass_types = [
+                "Grass_001.fbx",
+                "Grass_002.fbx",
+                "Grass_003.fbx",
+                "Grass_004.fbx",
+                "Grass_005.fbx",
+                "Grass_006.fbx",
+                "Grass_007.fbx"
+            ]
+            self.grass.append(Entity("..\\assets\\bushes\\models\\"+random.choice(grass_types), texture_path = '.\\assets\\bushes\\T_Grass.png', position = mouse.world_point))
 
     def start(self):
         self.background_sound.play()
