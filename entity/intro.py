@@ -22,7 +22,7 @@ The abandoned research facility is a place of horror, and you must survive the n
         self.text.appear(speed=0.05)
         self.skip = Text("Press space to skip",scale=1, x=-.8, y=-.4,z=-2, line_height=1.2, max_width=1.5,resolution = 50,size = 0.04,wordwrap = 80	)
         self.on_end = on_end
-        invoke(Func(self.text.animate_position,Vec2(-.8,1.4),duration=54,curve= curve.linear), delay=0.05*500)
+        invoke(self.slide_in, delay=0.05*500)
         
     def _on_end(self):
         destroy(self.overlay)
@@ -30,6 +30,12 @@ The abandoned research facility is a place of horror, and you must survive the n
         destroy(self.skip)
         destroy(self)
         self.on_end()
+    
+    def slide_in(self):
+        try :
+            self.text.animate_position(Vec2(-.8,1.4),duration=54,curve= curve.linear)
+        except:
+            pass
     
     def input(self,key):
         if key == "space":

@@ -34,10 +34,6 @@ def update():
 def input(key):
     if key == "f":
         world.ankheg.play_screamer()
-    if key == "q":
-        world.toggle_left_pane()
-    if key == "e":
-        world.toggle_right_pane()
     """
     if key == "s":
         json.dump([tuple(i.position) for i in world.grass], open("grass.json", "w"))
