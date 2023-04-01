@@ -33,7 +33,7 @@ class World(Entity):
         self.load_spiders()
         self.load_grass()
         self.load_buttons()
-        self.sky = Sky(texture='assets/world/sky.jpg', scale=1000, double_sided=True)
+        #self.sky = Sky(texture='assets/world/sky.jpg', scale=1000, double_sided=True)
 
     def load_camp(self)-> None:
         self.grillage = Entity(model = "cube", scale = (29.5,5,0.1), position = (6.75,3.5,5.05),rotation_z= -2.5,texture="./assets/world/grillage.png",texture_scale=(12.25,5,2.5))
@@ -177,8 +177,8 @@ class World(Entity):
 class Shades(Entity):
     def __init__(self,world:World) -> None:
         super().__init__(self)
-        self.left_pane = Shade(position = Vec3(0.535, 2.01, -0.355))
-        self.right_pane = Shade(position = Vec3(-0.65, 2.01, -0.325))
+        self.left_pane = Shade(self,position = Vec3(0.535, 2.01, -0.355))
+        self.right_pane = Shade(self,position = Vec3(-0.65, 2.01, -0.325))
         self.world = world
         
 
@@ -206,11 +206,13 @@ class Shades(Entity):
             pass
 
 class Shade(Entity):
-    def __init__(self, **kwargs):
+    def __init__(self,manager, **kwargs):
         super().__init__(model = "cube", scale = (0.01,0,0.67),texture = "./assets/world/roller-shutter.jpg",shader = unlit_shader,**kwargs)
         self.durability = 100
         self.is_open = True
-    
+        self.indicator = Structural_Integrity_Display(self)
+        self.manager = manager
+            
     @property
     def durability(self) -> int:
         return self._durability
@@ -219,18 +221,18 @@ class Shade(Entity):
     def durability(self, value: int) -> None:
         if value <= 0:
             self._durability = 0
-            self.texture_offset = (.75,0)
         elif value > 100:
             self._durability = 100
         else:
             self._durability = value
     
     def toggle(self) -> None:
-        if self.scale_y <0.3:
-            self.close()
-        else:
-            self.open()
-        self.is_open = not self.is_open
+        if self.durability:
+            if self.is_open:
+                self.close()
+            else:
+                self.open()
+            self.is_open = not self.is_open
     
     def close(self)-> None:
         self.animate_position((self.x, self.y-0.3, self.z), duration=0.2, curve=curve.linear)
@@ -242,6 +244,25 @@ class Shade(Entity):
         
 class Structural_Integrity_Display(Entity):
     def __init__(self,shade, **kwargs):
-        super().__init__(parent = shade,model = "quad", scale = (0.01,0,0.67),texture = "../assets/ui/cle a molette.png",texture_scale=(4,1),shader = unlit_shader,**kwargs)
+        super().__init__(model = "quad",position=shade.position+Vec3(0,-0.3,0),double_sided=True,
+                         scale = (0.2,0.2),texture = "../assets/ui/cle a molette.png",
+                         texture_scale=(0.25,1),shader = unlit_shader,rotation=Vec3(0,90,0),
+                         always_on_top=True,**kwargs)
+        self.shade = shade
         
-        self.durability = 100
+        
+    def update(self) -> None:
+        if self.shade.manager.world.player.mode == 0:
+            self.visible = False
+        else:
+            self.visible = True
+            
+        if self.shade.durability <= 0:
+            self.texture_offset = (.75,0)
+        elif self.shade.durability > 66:
+            self.texture_offset = (0,0)
+        elif self.shade.durability > 33:
+            self.texture_offset = (.25,0)
+        elif self.shade.durability > 0:
+            self.texture_offset = (.5,0)
+    
