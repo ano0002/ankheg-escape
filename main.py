@@ -25,12 +25,11 @@ def update():
         ankheg.play_screamer()
     """
     """
-    left_pane.position += Vec3(
+    world.spotlight.position += Vec3(
         (held_keys['d']-held_keys['a']) * time.dt * 0.5,
         (held_keys['space']-held_keys['shift']) * time.dt * 0.5,
         (held_keys['w']-held_keys['s']) * time.dt * 0.5
-    )
-    """
+    )"""
 
 def input(key):
     if key == "f":

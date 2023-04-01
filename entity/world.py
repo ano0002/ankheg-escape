@@ -8,6 +8,7 @@ from entity.exterior import Tree, Post
 from entity.spider import Spider
 from entity.audio3d import Audio3d
 from entity.intro import Intro
+from entity.spotlight import Spotlight
 import random
 import json
 
@@ -114,6 +115,7 @@ class World(Entity):
         self.post = Post(position = (-0.7,1,0),rotation= (0,180,0))
         self.shades = Shades(self)
         self.load_door()
+        self.spotlight = Spotlight(position = (0,2.13,-0.55),rotation = (0,90,0),world = self)
 
     def load_door(self) -> None:
         self.door_leave = Custom_Button(scale = (0.01,1,0.5), position = (0.4,1.51,0.25), color=color.clear, text = "Leave", on_click = self.leave_post,animated=False, player=self.player)
