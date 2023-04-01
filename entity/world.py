@@ -54,7 +54,7 @@ class World(Entity):
             "Grass_005.fbx",
             "Grass_006.fbx",
             "Grass_007.fbx"
-        ]]            
+        ]          
         self.grass = []
         for x in range(-10,10):
             for z in range(-10,10) :
@@ -111,7 +111,7 @@ class World(Entity):
 
     def load_post(self) -> None:
         self.post = Post(position = (-0.7,1,0),rotation= (0,180,0))
-        self.load_panes()
+        #self.load_panes()
         self.load_door()
 
     def load_door(self) -> None:
@@ -174,13 +174,16 @@ class World(Entity):
 
 
 
-class Shades:
-    def __init__(self) -> None:
+class Shades(Entity):
+    def __init__(self,world:World) -> None:
+        super().__init__(self)
         self.left_pane = Entity(model = "cube", scale = (0.01,0,0.67), position = Vec3(0.535, 2.01, -0.355), \
             texture = "./assets/world/roller-shutter.jpg",shader = unlit_shader)
         self.right_pane = Entity(model = "cube", scale = (0.01,0,0.67), position = Vec3(-0.65, 2.01, -0.325), \
             texture = "./assets/world/roller-shutter.jpg",shader = unlit_shader)
-
+        self.durability = 100
+        self.world = world
+        
 
     def toggle_left_pane(self) -> None:
         if self.left_pane.scale_y <0.3:
@@ -213,4 +216,10 @@ class Shades:
 
     def status(self) -> Tuple[bool,bool]:
         return (self.left_pane.scale_y >= 0.3, self.right_pane.scale_y >= 0.3)
+    
+    def update(self) -> None:
+        if self.status()[0]:
+            
 
+
+shades = Shades()
