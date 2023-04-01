@@ -27,6 +27,7 @@ The abandoned research facility is a place of horror, and you must survive the n
     def _on_end(self):
         destroy(self.overlay)
         destroy(self.text)
+        destroy(self.skip)
         destroy(self)
         self.on_end()
     

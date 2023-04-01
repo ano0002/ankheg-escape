@@ -7,6 +7,7 @@ from entity.interior_ui import Custom_Button
 from entity.exterior import Tree, Post
 from entity.spider import Spider
 from entity.audio3d import Audio3d
+from entity.intro import Intro
 import random
 import json
 
@@ -33,6 +34,7 @@ class World(Entity):
         self.load_spiders()
         self.load_grass()
         self.load_buttons()
+        self.load_intro()
         #self.sky = Sky(texture='assets/world/sky.jpg', scale=1000, double_sided=True)
 
     def load_camp(self)-> None:
@@ -139,6 +141,9 @@ class World(Entity):
 
     def load_ui(self) -> None:
         self.ui = UI(start = self.start,player = self.player)
+
+    def load_intro(self) -> None:
+        self.intro = Intro(on_end=lambda: setattr(self, "intro", None))
 
 
     def update(self) -> None:
