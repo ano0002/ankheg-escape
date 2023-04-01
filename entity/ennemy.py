@@ -14,7 +14,7 @@ class Ankheg(Entity):
             )
         self.world=world
         self.player = player
-        self.eyes = Entity(model="quad",scale = (0.5,0.5),texture = "../assets/monsters/eyes.jpg",position = (0,0,0),billboard = True)
+        self.eyes = Entity(model="quad",scale = (1,1),texture = "../assets/monsters/eyes.jpg",position = (0,0,0),billboard = True,always_on_top = True,enabled = False)
 
     def play_screamer(self) -> None:
         self.enable()
@@ -28,10 +28,12 @@ class Ankheg(Entity):
         camera.rotation = (5,2,0)
         camera.shake(duration = 1, magnitude = 1)
 
-    def walk(self) -> None:
-        self.eyes.animate_position((0,0,0), duration = 1)
-        invoke(self.world.ankheg_growl.play,delay = 1)
-        invoke(self.walk,delay = 1.5)
+    def walk(self,side) -> None:
+        self.eyes.enable()
+        self.eyes.position = self.position 
+        self.eyes.animate_position(camera.position+Vec3(2*side,0,-20), duration = 10,curve = curve.linear)
+        invoke(self.world.ankheg_growl.play,delay = 10)
+        
 
     def reset(self) -> None:
         self.eyes.disable()

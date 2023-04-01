@@ -172,7 +172,7 @@ class World(Entity):
                         spider.play_screamer()
 
         if self.time > self.next_monster:
-            self.is_growling = True
+            
             self.side = random.choice([-1,1])
             if self.side == 1:
                 self.ankheg.position = (50,0,0)
@@ -180,13 +180,16 @@ class World(Entity):
             else:
                 self.ankheg.position = (-50,0,0)
                 self.ankheg.rotation = (0,0,0)
-            self.ankheg.walk()
+            self.ankheg.walk(self.side)
+            def on_start():
+                self.is_growling = True
             def on_end():
                 self.is_growling = False
                 self.total_monster_time = random.randint(5,10)
                 self.ankheg.reset()
             invoke(on_end, delay=self.total_monster_time)
-            self.next_monster = self.time ++ random.randint(20,35)
+            invoke(on_start, delay=10)
+            self.next_monster = self.time + random.randint(20,35)
 
         if self.is_growling:
             if self.player.mode == 0:
@@ -202,7 +205,8 @@ class World(Entity):
                     else:
                         #not self.ankheg_growl.playing and self.ankheg_growl.play()
                         pass
-
+        if self.player.mode == 2:
+            self.ankheg_growl.stop()
     def input(self, key) -> None:
         if self.player.mode == 1:
             if key == "q":
