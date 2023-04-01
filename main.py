@@ -26,28 +26,10 @@ def update() -> None:
     if distance > 15 and player.mode == 0:
         world.ankheg.play_screamer()
     
-    """
-    if distance_xz(player.position, post.position) >5 and player.mode != 2:
-        ankheg.play_screamer()
-    """
-    """
-    world.spotlight.position += Vec3(
-        (held_keys['d']-held_keys['a']) * time.dt * 0.5,
-        (held_keys['space']-held_keys['shift']) * time.dt * 0.5,
-        (held_keys['w']-held_keys['s']) * time.dt * 0.5
-    )"""
-
 def input(key) -> None:
     if key == "f":
         world.ankheg.play_screamer()
     if key == "g":
         world.spiders[0].play_screamer()
-    """
-    if key == "s":
-        json.dump([tuple(i.position) for i in world.grass], open("grass.json", "w"))
-    """
-
-
-#EditorCamera()
 
 app.run()

@@ -304,10 +304,10 @@ class Shade(Entity):
 
     def update(self) -> None:
         self.timer += time.dt
-        if not self.is_open and self.timer > 0.2:
+        if not self.is_open and self.timer > 0.6:
             self.durability -= 1
             self.timer = 0
-        elif self.is_open and self.timer > 0.4:
+        elif self.is_open and self.timer > 1.2:
             self.durability += 1
             self.timer = 0
             
