@@ -32,7 +32,6 @@ class Ankheg(Entity):
         self.eyes.enable()
         self.eyes.position = self.position 
         self.eyes.animate_position(camera.position+Vec3(2*side,0,-20), duration = 10,curve = curve.linear)
-        invoke(self.world.ankheg_growl.play,delay = 10)
         
 
     def reset(self) -> None:

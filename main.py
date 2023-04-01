@@ -26,10 +26,5 @@ def update() -> None:
     if distance > 15 and player.mode == 0:
         world.ankheg.play_screamer()
     
-def input(key) -> None:
-    if key == "f":
-        world.ankheg.play_screamer()
-    if key == "g":
-        world.spiders[0].play_screamer()
 
 app.run()

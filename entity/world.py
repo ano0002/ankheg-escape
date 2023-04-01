@@ -187,19 +187,22 @@ class World(Entity):
                 self.is_growling = False
                 self.total_monster_time = random.randint(5,10)
                 self.ankheg.reset()
-            invoke(on_end, delay=self.total_monster_time)
+            invoke(on_end, delay=10+self.total_monster_time)
             invoke(on_start, delay=10)
-            self.next_monster = self.time +self.total_monster_time+ random.randint(10,15)
+            self.next_monster = self.next_monster +10+self.total_monster_time+ random.randint(10,15)
 
         if self.is_growling:
             if self.player.mode == 0:
+                print("here")
                 self.ankheg.play_screamer()
             else:
                 if self.player.mode == 1:
                     if self.side == 1 and self.shades.status()["left_pane"]["is_open"] == True:
+                        print("there")
                         self.ankheg_growl.stop()
                         self.ankheg.play_screamer()
                     elif self.side == -1 and self.shades.status()["right_pane"]["is_open"] == True:
+                        print("it's here")
                         self.ankheg_growl.stop()
                         self.ankheg.play_screamer()
                     else:
