@@ -7,10 +7,11 @@ class Spotlight(Entity):
             model="../assets/post/spotlight.obj",
             color=color.black,
             rotation= Vec3(0,90,0),
+            double_sided=True,
             **kwargs
         )
         self.light_cone = Entity(parent=self, model='../assets/flashlight/lightcone.obj', color=color.white50,\
-                                 position=(0,0,0),rotation = Vec3(95,-90,0),scale=100,shader = unlit_shader)
+                                 position=(0,1,0),rotation = Vec3(80,-90,0),scale=100,shader = unlit_shader)
         
 
 if __name__ == '__main__':
