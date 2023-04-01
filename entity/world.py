@@ -210,12 +210,13 @@ class Shades(Entity):
             pass
 
 class Shade(Entity):
-    def __init__(self,manager, **kwargs) -> None:
+    def __init__(self,manager,world:World, **kwargs) -> None:
         super().__init__(model = "cube", scale = (0.01,0,0.67),texture = "./assets/world/roller-shutter.jpg",shader = unlit_shader,**kwargs)
         self.durability = 100
         self.is_open = True
         self.indicator = Structural_Integrity_Display(self)
         self.manager = manager
+        self.world = world
 
     @property
     def durability(self) -> int:
@@ -238,9 +239,19 @@ class Shade(Entity):
                 self.open()
             self.is_open = not self.is_open
 
+    def update(self) -> None:
+        if not self.is_open:
+            durability = self.durability - self.world.time-self.time
+            self.durability = durability
+            self.time = self.world.time
+        if self.durability <= 0:
+            self.close()
+            self.is_open = False
+
     def close(self)-> None:
         self.animate_position((self.x, self.y-0.3, self.z), duration=0.2, curve=curve.linear)
         self.animate_scale((self.scale_x,0.6,self.scale_z), duration=0.2, curve=curve.linear)
+        self.time = self.world.time
 
     def open(self)-> None:
         self.animate_position((self.x, self.y+0.3, self.z), duration=0.2, curve=curve.linear)
