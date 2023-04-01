@@ -32,9 +32,7 @@ def update():
         (held_keys['w']-held_keys['s']) * time.dt * 0.5
     )
     """
-    
-    
-    
+
 def input(key):
     if key == "f":
         world.ankheg.play_screamer()
@@ -42,10 +40,6 @@ def input(key):
         world.toggle_left_pane()
     if key == "e":
         world.toggle_right_pane()
-    if key == "s":
-        json.dump([tuple(i.position) for i in world.grass], open("grass.json", "w"))
 
-
-EditorCamera()
 
 app.run()
