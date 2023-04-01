@@ -126,10 +126,11 @@ class World(Entity):
 
 
     def load_sound(self) -> None:
-        self.background_sound = Audio("assets/sounds/atmosphere-dark.mp3", autoplay=False, loop=True, volume=0.5)
+        self.background_sound = Audio("assets/sounds/atmosphere-dark.mp3", autoplay=False, loop=True, volume=0.3)
         self.spider_hiss = Audio3d("assets/sounds/spider_hiss.wav", volume=0.5,player = self.player,position = (0,0,0))
         self.monster_scream = Audio("assets/sounds/monster_scream.mp3", autoplay=False, loop=False, volume=1)
         self.ankheg_walk = Audio3d("assets/sounds/ankheg walk.mp3", volume=0.5,player = self.player,position = (0,0,0))
+        self.spider_steps = Audio("assets/sounds/spider_steps.mp3", autoplay=False, loop=False, volume=1)
 
     def load_buttons(self)-> None:
         self.button1 = Custom_Button(text="Toggle light",scale = Vec3(0.1), position = Vec3(-0.2, 1.4, -0.6),on_click= self.spotlight.toggle,player=self.player)

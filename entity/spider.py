@@ -1,7 +1,7 @@
 from ursina import *
 from direct.actor.Actor import Actor
 from ursina.shaders import unlit_shader
-
+import random
 
 class Spider(Entity):
     def __init__(self,target,world, **kwargs) -> None:
@@ -18,13 +18,14 @@ class Spider(Entity):
         self.target = target
         self.world = world
 
-    def run(self, position = None) -> None:
+    def run(self, position = None, duration = 2.3) -> None:
         self.enable()
         self.fade_in(duration=0.1)
         if not position:
             position = self.target
-        self.animate_position(position, duration=2.3, curve=curve.linear)
+        self.animate_position(position, duration=duration, curve=curve.linear)
         self.look_at(position)
+        self.rotation_y += 180
         self.rotation = (0, self.rotation_y, 0)
 
     def reset(self) -> None:
@@ -34,15 +35,25 @@ class Spider(Entity):
 
     def play_screamer(self) -> None:
         self.enable()
-        self.world.monster_scream.play()
+        self.world.spider_steps.play()
         self.world.player.mode = 2
-        self.position = (0,-4.4,25)
+        self.position = (0,-5.5,10)
         AmbientLight(color=(1, 1, 1, 1.0))
-        self.animate_position((0,-10,0), duration = .2)
+        self.animate_position((0,-5.5,-3), duration = 6,curve = curve.linear)
+        for i in range(-10, 10):
+            spider = Spider(position=(i/10, -5.5, 10),target = (i/10,-5.5,-3), world = self.world)
+            invoke(Func(spider.run,duration=6), delay = random.random()*5)
+            
         camera.parent = scene
         camera.position = (0,-5,-4)
         camera.rotation = (5,2,0)
-        camera.shake(duration = 1, magnitude = 1)
+        def scream(spider):
+            spider.position = (0,-5.2,-3)
+            spider.world.spider_hiss.position = (0,-5.2,-3)
+            spider.world.spider_hiss.play()
+
+            
+        invoke(scream,self,delay = 7)
 
 
 if __name__ == '__main__':
