@@ -27,7 +27,9 @@ class World(Entity):
         self.next_monster = random.randint(10,15)
         self.total_monster_time = random.randint(5,10)
         self.monster_time = 0
-        
+        self.next_pitch_correction =0
+        self.is_growling = False
+        self.side = 1
 
     def load_world(self) -> None:
         self.load_lights()
@@ -135,7 +137,7 @@ class World(Entity):
         self.monster_scream = Audio("assets/sounds/monster_scream.mp3", autoplay=False, loop=False, volume=1)
         self.ankheg_walk = Audio3d("assets/sounds/ankheg walk.mp3", volume=0.5,player = self.player,position = (0,0,0))
         self.spider_steps = Audio("assets/sounds/spider_steps.mp3", autoplay=False, loop=False, volume=1)
-        self.ankheg_growl = Audio("assets/sounds/ankheg_growl.mp3", autoplay=False,loop=True, volume=1)
+        self.ankheg_growl = Audio("assets/sounds/ankheg_growl.mp3", autoplay=False,loop=False, volume=1)
 
     def load_buttons(self)-> None:
         self.button1 = Custom_Button(text="Toggle light",scale = Vec3(0.1), position = Vec3(-0.2, 1.4, -0.6),on_click= self.spotlight.toggle,player=self.player)
@@ -168,6 +170,7 @@ class World(Entity):
                         spider.play_screamer()
 
         if self.time > self.next_monster:
+            self.is_growing = True
             self.side = random.choice([-1,1])
             if self.side == 1:
                 self.ankheg.position = (50,0,0)
@@ -179,13 +182,23 @@ class World(Entity):
             self.ankheg_walk.play()
             self.ankheg_walk.parent = self.ankheg
             self.ankheg_walk.position = (0,0,0)
-            invoke(self.ankheg.reset, delay=self.total_monster_time)
-            
-        
-        if self.time > self.next_monster+self.total_monster_time:
-            self.ankheg_growl.play()
-            self.next_monster = self.time + random.randint(10,20)
-            self.total_monster_time = random.randint(5,10)
+            def on_end():
+                self.is_growling = False
+                self.total_monster_time = random.randint(5,10)
+                self.ankheg.reset()
+            invoke(on_end, delay=self.total_monster_time)
+            self.next_monster = self.time + random.randint(20,35)
+            self.next_pitch_correction = self.time + 2
+
+        if self.is_growling:
+            if self.player.mode == 0:
+                self.ankheg.play_screamer()
+            else:
+                if self.side == 1 and self.shades.status()["left"]["is_open"] == True:
+                    self.ankheg.play_screamer()
+                elif self.side == -1 and self.shades.status()["right"]["is_open"] == True:
+                    self.ankheg.play_screamer()
+                        
 
     def input(self, key) -> None:
         if self.player.mode == 1:

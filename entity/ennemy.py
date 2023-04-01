@@ -30,12 +30,11 @@ class Ankheg(Entity):
 
     def walk(self) -> None:
         self.eyes.animate_position((0,0,0), duration = 1)
+        invoke(self.world.ankheg_growl.play,delay = 1)
         invoke(self.walk,delay = 1.5)
 
     def reset(self) -> None:
-        self.fade_out(duration=0.1)
         self.eyes.disable()
-        self.world.ankheg_growl.stop()
         invoke(self.disable, delay=0.1)
         invoke(Func(setattr,self,"position", (0,-4.4,25)),delay = 0.2)
 
