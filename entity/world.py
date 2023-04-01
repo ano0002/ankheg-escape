@@ -56,7 +56,7 @@ class World(Entity):
             "Grass_005.fbx",
             "Grass_006.fbx",
             "Grass_007.fbx"
-        ]          
+        ]
         self.grass = []
         for x in range(-10,10):
             for z in range(-10,10) :
@@ -77,8 +77,8 @@ class World(Entity):
                             shader=lit_with_shadows_shader,
                         )
                     )
-    
-            
+
+
     def load_trees(self) -> None:
         tree_types = [
             "Tree Type0 01.dae",
@@ -129,7 +129,7 @@ class World(Entity):
         self.background_sound = Audio("assets/sounds/atmosphere-dark.mp3", autoplay=False, loop=True, volume=0.5)
         self.spider_hiss = Audio3d("assets/sounds/spider_hiss.wav", volume=0.5,player = self.player,position = (0,0,0))
         self.monster_scream = Audio("assets/sounds/monster_scream.mp3", autoplay=False, loop=False, volume=1)
-        
+
     def load_buttons(self)-> None:
         self.button1 = Custom_Button( scale = Vec3(0.1), position = Vec3(-0.2, 1.4, -0.6),on_click= self.spotlight.toggle,player=self.player)
         self.button4 = Custom_Button(scale= Vec3(0.07),position= Vec3(-0.6,1.4,-0.45),on_click=self.shades.toggle_right_pane,player=self.player)
@@ -182,7 +182,7 @@ class Shades(Entity):
         self.left_pane = Shade(self,position = Vec3(0.535, 2.01, -0.355))
         self.right_pane = Shade(self,position = Vec3(-0.65, 2.01, -0.325))
         self.world = world
-        
+
 
     def toggle_left_pane(self) -> None:
         self.left_pane.toggle()
@@ -202,23 +202,24 @@ class Shades(Entity):
                 "is_open": self.right_pane.is_open
             }
         }
-    
+
     def update(self) -> None:
         if not self.status()["left_pane"]["is_open"]:
             pass
 
 class Shade(Entity):
-    def __init__(self,manager, **kwargs):
+    def __init__(self,manager,world:World, **kwargs) -> None:
         super().__init__(model = "cube", scale = (0.01,0,0.67),texture = "./assets/world/roller-shutter.jpg",shader = unlit_shader,**kwargs)
         self.durability = 100
         self.is_open = True
         self.indicator = Structural_Integrity_Display(self)
         self.manager = manager
-            
+        self.world = world
+
     @property
     def durability(self) -> int:
         return self._durability
-    
+
     @durability.setter
     def durability(self, value: int) -> None:
         if value <= 0:
@@ -227,7 +228,7 @@ class Shade(Entity):
             self._durability = 100
         else:
             self._durability = value
-    
+
     def toggle(self) -> None:
         if self.durability:
             if self.is_open:
@@ -235,36 +236,41 @@ class Shade(Entity):
             else:
                 self.open()
             self.is_open = not self.is_open
-    
+
+    def update(self) -> None:
+        if not self.is_open:
+            durability = self.durability - self.world.time-self.time
+            self.durability = durability
+            self.time = self.world.time
+        if self.durability <= 0:
+            self.close()
+            self.is_open = False
+
     def close(self)-> None:
         self.animate_position((self.x, self.y-0.3, self.z), duration=0.2, curve=curve.linear)
         self.animate_scale((self.scale_x,0.6,self.scale_z), duration=0.2, curve=curve.linear)
-    
+        self.time = self.world.time
+
     def open(self)-> None:
         self.animate_position((self.x, self.y+0.3, self.z), duration=0.2, curve=curve.linear)
         self.animate_scale((self.scale_x,0,self.scale_z), duration=0.2, curve=curve.linear)
-        
+
 class Structural_Integrity_Display(Entity):
-    def __init__(self,shade, **kwargs):
+    def __init__(self,shade, **kwargs) -> None:
         super().__init__(model = "quad",position=shade.position+Vec3(0,-0.3,0),double_sided=True,
                          scale = (0.2,0.2),texture = "../assets/ui/cle a molette.png",
                          texture_scale=(0.25,1),shader = unlit_shader,rotation=Vec3(0,90,0),
                          always_on_top=True,**kwargs)
         self.shade = shade
-        
-        
+
+
     def update(self) -> None:
-        if self.shade.manager.world.player.mode == 0:
-            self.visible = False
-        else:
-            self.visible = True
-            
+        self.visible = self.shade.manager.world.player.mode != 0
         if self.shade.durability <= 0:
             self.texture_offset = (.75,0)
         elif self.shade.durability > 66:
             self.texture_offset = (0,0)
         elif self.shade.durability > 33:
             self.texture_offset = (.25,0)
-        elif self.shade.durability > 0:
+        else:
             self.texture_offset = (.5,0)
-    
