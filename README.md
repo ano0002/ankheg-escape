@@ -1,16 +1,23 @@
 # ankheg escape
- pyweek 35
 
+This game was made by ano002 and Eliot999 for the [pyweek 35](https://pyweek.org/35/entries/) 
 
-Press q and e to close the right and left window shades.
-Use wasd to move, and the mouse to look around. 
+# Installation
 
-Sound Effect from Pixabay
+To run this program use [pip](https://pip.pypa.io/en/stable/) like this :
+```bash
+pip install -r requirements.txt
+``` 
+and then start the ./run_game.py file.
 
-Needs ursina and numpy
+The program need ursina and panda3d to work (should be installed by pip when running the command previously mentionned).
 
-Gabzy2TMM donna de l'aide au sound design
+You can use : 
+* q and e to close the right and left window shades.
+* wasd to move, and the mouse to look around.
+* a and d to rotate the camera when in the post.
 
+# Lore
 
 You are the new security guard on the night shift, stationed at the abandoned research facility. It's your first night on the job, and you're feeling a little uneasy. The facility has been closed for years, and the rumors about what happened here have always been unsettling.
 
@@ -25,3 +32,12 @@ You feel its acid spray burning your skin, and you scream in agony. Just when yo
 It was all just a nightmare, but the fear lingers. You realize that the rumors about the facility might be true, and the ankheg might still be out there, waiting for its next victim.
 
 The abandoned research facility is a place of horror, and you must survive the night shift if you want to uncover the truth about what really happened here. The ankheg is still out there, waiting to hunt you down. Will you be able to make it to morning, or will you become the next victim of the ankheg's endless hunger?  
+
+## Contributing
+
+Sound Effect from Pixabay
+
+Gabzy2TMM gave us help with the sound design.
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
